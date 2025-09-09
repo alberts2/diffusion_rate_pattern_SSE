@@ -511,4 +511,197 @@ Show[region1,surf1,surf2,AxesLabel -> {"\[Lambda]A", "qBA", "muA"}]
 Show[region2,surf3,surf4,AxesLabel -> {"\[Lambda]A", "qBA", "muA"}]
 
 
+(*stationary = [piA = 0.2, piB = 0.1, piAB = 0.7]*)
+(*Solution surface for wA, dBA and eA*)
+
+(*Fixed values for dAB, wB, eB and bAB*)
+
+(*this scenario satisfies ruleset 1 but not ruleset 2*)
+(*one example will gives us under ruleset 1 qBA = 0.7/3, muA = 0.2, lambdaA = 0.1/2 *)
+(*In fact, any values where mu_A > 1/2*(-2qAB + 3qBA) and \lambda_A = 1/2(2mu_A+2qAB-3qBA) 
+will lead to the same stationary frequencies.*)
+(*For example: qBA = 0.7/3, muA = 0.4, lambdaA = 0.25*)
+(*Again, the net diversification is A is preserved in these two examples*)
+
+dABVal = 0.1;
+eBVal = 0.1;
+wBVal = 0.075;
+bABVal = 0.01;
+
+
+(*Ruleset 1*)
+
+(*plot the region bounded by the inequalities *)
+region1 = RegionPlot3D[
+  1/9*(-7*bABVal + 2*dABVal + 2/7*(-7*bABVal + 2*dABVal + dBA - 7*eBVal)- 7*eBVal) > 0&&
+  1/8*(-2*dABVal + 8*eBVal) > 0 &&
+  1/7*(-7*bABVal + 2*dABVal + dBA - 7*eBVal) > 0 &&
+  (**)
+   bABVal < 1/63*(18*dABVal + 2*dBA - 63*eBVal) &&
+   dABVal <= 49*eBVal/15 &&
+   dBA > 1/2*(-18*dABVal + 63*eBVal) &&
+   wA > 0 &&
+   dBA > 0 &&
+   eA > 0,
+  {wA, 0, 3}, {dBA, 0, 3}, {eA, 0, 3},
+  PlotStyle -> Opacity[0.2, Gray],
+  Mesh -> None
+];
+
+(* plot the plan for wA equality *)
+surf1 = ContourPlot3D[
+  wA - 1/9*(-7*bABVal + 2*dABVal + 2/7*(-7*bABVal + 2*dABVal + dBA - 7*eBVal)- 7*eBVal) == 0,
+  {wA, 0, 3}, {dBA, 0, 3}, {eA, 0, 3},
+  RegionFunction -> Function[{wA, dBA, eA},
+  1/9*(-7*bABVal + 2*dABVal + 2/7*(-7*bABVal + 2*dABVal + dBA - 7*eBVal)- 7*eBVal) > 0&&
+  1/8*(-2*dABVal + 8*eBVal) > 0 &&
+  1/7*(-7*bABVal + 2*dABVal + dBA - 7*eBVal) > 0 &&
+  (**)
+   bABVal < 1/63*(18*dABVal + 2*dBA - 63*eBVal) &&
+   dABVal <= 49*eBVal/15 &&
+   dBA > 1/2*(-18*dABVal + 63*eBVal) &&
+   wA > 0 &&
+   dBA > 0 &&
+   eA > 0
+  ],
+  PlotPoints -> 60, MaxRecursion -> 3,
+   Mesh -> None,
+  ContourStyle -> Opacity[1, Red]
+];
+
+(* plot the plan for wB equality *)
+surf2 = ContourPlot3D[
+  wBVal - 1/8*(-2*dABVal + 8*eBVal) == 0, (*this will be a fixed value since wB, dAB, and eB are fixed, so this will not be plotted*)
+  {wA, 0, 1}, {dBA, 0, 3}, {eA, 0, 1},
+  RegionFunction -> Function[{wA, dBA, eA},
+  1/9*(-7*bABVal + 2*dABVal + 2/7*(-7*bABVal + 2*dABVal + dBA - 7*eBVal)- 7*eBVal) > 0&&
+  1/8*(-2*dABVal + 8*eBVal) > 0 &&
+  1/7*(-7*bABVal + 2*dABVal + dBA - 7*eBVal) > 0 &&
+  (**)
+   bABVal < 1/63*(18*dABVal + 2*dBA - 63*eBVal) &&
+   dABVal <= 49*eBVal/15 &&
+   dBA > 1/2*(-18*dABVal + 63*eBVal) &&
+   wA > 0 &&
+   dBA > 0 &&
+   eA > 0
+  ],
+  PlotPoints -> 60, MaxRecursion -> 3,
+   Mesh -> None,
+  ContourStyle -> Opacity[1, Yellow]
+];
+
+(* plot the plan for eA equality *)
+surf3 = ContourPlot3D[
+  eA - 1/7*(-7*bABVal + 2*dABVal + dBA - 7*eBVal) == 0,
+  {wA, 0, 3}, {dBA, 0, 3}, {eA, 0, 3},
+  RegionFunction -> Function[{wA, dBA, eA},
+  1/9*(-7*bABVal + 2*dABVal + 2/7*(-7*bABVal + 2*dABVal + dBA - 7*eBVal)- 7*eBVal) > 0&&
+  1/8*(-2*dABVal + 8*eBVal) > 0 &&
+  1/7*(-7*bABVal + 2*dABVal + dBA - 7*eBVal) > 0 &&
+  (**)
+   bABVal < 1/63*(18*dABVal + 2*dBA - 63*eBVal) &&
+   dABVal <= 49*eBVal/15 &&
+   dBA > 1/2*(-18*dABVal + 63*eBVal) &&
+   wA > 0 &&
+   dBA > 0 &&
+   eA > 0
+  ],
+  PlotPoints -> 30, MaxRecursion -> 2,
+   Mesh -> None,
+  ContourStyle -> Opacity[1, Blue]
+];
+
+(*Ruleset 2*)
+
+(*plot the region bounded by the inequalities *)
+region2 = RegionPlot3D[
+  1/9*(-7*bABVal + 2*dABVal + 2/7*(-7*bABVal + 2*dABVal + dBA - 7*eBVal)- 7*eBVal) > 0&&
+  1/8*(-2*dABVal + 8*eBVal) > 0 &&
+  1/7*(-7*bABVal + 2*dABVal + dBA - 7*eBVal) > 0 &&
+  (**)
+   bABVal < 1/63*(18*dABVal + 2*dBA - 63*eBVal) &&
+   dABVal < 4*eBVal &&
+   dABVal > 49*eBVal/15 &&
+   dBA > 9*dABVal/14 &&
+   wA > 0 &&
+   dBA > 0 &&
+   eA > 0,
+  {wA, 0, 3}, {dBA, 0, 3}, {eA, 0, 3},
+  PlotStyle -> Opacity[0.2, Gray],
+  Mesh -> None
+];
+
+(* plot the plan for wA equality *)
+surf4 = ContourPlot3D[
+  wA - 1/9*(-7*bABVal + 2*dABVal + 2/7*(-7*bABVal + 2*dABVal + dBA - 7*eBVal)- 7*eBVal) == 0,
+  {wA, 0, 3}, {dBA, 0, 3}, {eA, 0, 3},
+  RegionFunction -> Function[{wA, dBA, eA},
+  1/9*(-7*bABVal + 2*dABVal + 2/7*(-7*bABVal + 2*dABVal + dBA - 7*eBVal)- 7*eBVal) > 0&&
+  1/8*(-2*dABVal + 8*eBVal) > 0 &&
+  1/7*(-7*bABVal + 2*dABVal + dBA - 7*eBVal) > 0 &&
+  (**)
+   bABVal < 1/63*(18*dABVal + 2*dBA - 63*eBVal) &&
+   dABVal < 4*eBVal &&
+   dABVal > 49*eBVal/15 &&
+   dBA > 9*dABVal/14 &&
+   wA > 0 &&
+   dBA > 0 &&
+   eA > 0
+  ],
+  PlotPoints -> 30, MaxRecursion -> 2,
+   Mesh -> None,
+  ContourStyle -> Opacity[1, Red]
+];
+
+(* plot the plan for wB equality *)
+surf5 = ContourPlot3D[
+  wBVal - 1/8*(-2*dABVal + 8*eBVal) == 0,
+   {wA, 0, 3}, {dBA, 0, 3}, {eA, 0, 3},
+  RegionFunction -> Function[{wA, dBA, eA},
+  1/9*(-7*bABVal + 2*dABVal + 2/7*(-7*bABVal + 2*dABVal + dBA - 7*eBVal)- 7*eBVal) > 0&&
+  1/8*(-2*dABVal + 8*eBVal) > 0 &&
+  1/7*(-7*bABVal + 2*dABVal + dBA - 7*eBVal) > 0 &&
+  (**)
+   bABVal < 1/63*(18*dABVal + 2*dBA - 63*eBVal) &&
+   dABVal < 4*eBVal &&
+   dABVal > 49*eBVal/15 &&
+   dBA > 9*dABVal/14 &&
+   wA > 0 &&
+   dBA > 0 &&
+   eA > 0
+  ],
+  PlotPoints -> 30, MaxRecursion -> 2,
+   Mesh -> None,
+  ContourStyle -> Opacity[1, Yellow]
+];
+
+(* plot the plan for eA equality *)
+surf6 = ContourPlot3D[
+  eA - 1/7*(-7*bABVal + 2*dABVal + dBA - 7*eBVal) == 0,
+   {wA, 0, 3}, {dBA, 0, 3}, {eA, 0, 3},
+  RegionFunction -> Function[{wA, dBA, eA},
+  1/9*(-7*bABVal + 2*dABVal + 2/7*(-7*bABVal + 2*dABVal + dBA - 7*eBVal)- 7*eBVal) > 0&&
+  1/8*(-2*dABVal + 8*eBVal) > 0 &&
+  1/7*(-7*bABVal + 2*dABVal + dBA - 7*eBVal) > 0 &&
+  (**)
+   bABVal < 1/63*(18*dABVal + 2*dBA - 63*eBVal) &&
+   dABVal < 4*eBVal &&
+   dABVal > 49*eBVal/15 &&
+   dBA > 9*dABVal/14 &&
+   wA > 0 &&
+   dBA > 0 &&
+   eA > 0
+  ],
+  PlotPoints -> 30, MaxRecursion -> 2,
+   Mesh -> None,
+  ContourStyle -> Opacity[1, Blue]
+];
+
+Show[surf1,AxesLabel -> {"wA", "dBA", "eA"}]
+Show[surf2,AxesLabel -> {"wA", "dBA", "eA"}]
+Show[surf3,AxesLabel -> {"wA", "dBA", "eA"}]
+(*Show[region1,surf1,surf2,surf3,AxesLabel -> {"wA", "dBA", "eA"}]
+Show[region2,surf4,surf5,surf6,AxesLabel -> {"wA", "dBA", "eA"}]*)
+
+
 
