@@ -462,6 +462,8 @@ if(variant == "2-region GeoSSE"){
   mesh <- rbind(mesh,mesh_project)
   #
   mesh <- unique(mesh[,1:4]) # remove duplicated rows from projection (for the case pi_A=pi_B = 0.5)
+  #
+  mesh$count_rule <- factor(mesh$count_rule)
   ############# PLOTTING ################
   #############################################################################################
   fig <- ggtern(mesh,aes(x=freq_A,y=freq_B,z=freq_AB)) + geom_hex_tern(binwidth=bin_size,aes(value=tot_prob),fun=median) + #the bidwidth is chosen according to grid width used for sampling frequencies
@@ -476,7 +478,7 @@ if(variant == "2-region GeoSSE"){
                        param_names[7]," in ", "[",lower_bound_vec[7],", ",upper_bound_vec[7],"], ","with tolerance = ",tol,
                        sep=""),
          x=expression(hat(Pi)[A]), y=expression(hat(Pi)[B]), z=expression(hat(Pi)[AB])) +
-    Tarrowlab("Stationary frequency B (%)") + Larrowlab("Stationary frequency A (%)") + Rarrowlab("Stationary frequency AB (%)") + theme(plot.title = element_text(hjust = 0.5)) 
+    Tarrowlab("Stationary frequency B (%)") + Larrowlab("Stationary frequency A (%)") + Rarrowlab("Stationary frequency AB (%)") + theme(plot.title = element_text(hjust = 0.5))
   #
   suppressWarnings(print(fig))
 }
