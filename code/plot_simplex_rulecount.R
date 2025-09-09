@@ -156,22 +156,27 @@ if(variant == "2-region GeoSSE"){
     }
     mesh$count_rule[i] <- length(rule_list$rules_sets)
   }
+  #
+  mesh$count_rule <- factor(mesh$count_rule)
   ###############################
   # PLOTTING
   ###############################
   ##
-  fig <- ggtern(mesh,aes(x=freq_A,y=freq_B,z=freq_AB)) + geom_hex_tern(binwidth=bin_size,aes(value=count_rule),fun=median) + #the binwidth is chosen according to grid width used for sampling frequencies
-    scale_fill_viridis(option = "A") + theme_rgbw() + theme_gridsontop() +
-    labs(title = "Count number of rules given stationary frequencies",x=expression(hat(Pi)[A]), y=expression(hat(Pi)[B]), z=expression(hat(Pi)[AB])) +
-    Tarrowlab("Stationary frequency B (%)") + Larrowlab("Stationary frequency A (%)") + Rarrowlab("Stationary frequency AB (%)") + theme(plot.title = element_text(hjust = 0.5)) 
-  # +geom_crosshair_tern(lty=3,col="grey")
-  #
-  suppressWarnings(print(fig))
+  # fig <- ggtern(mesh,aes(x=freq_A,y=freq_B,z=freq_AB)) + geom_hex_tern(binwidth=bin_size,aes(value=count_rule),fun=median) + #the binwidth is chosen according to grid width used for sampling frequencies
+  #   scale_fill_viridis(option = "A") + theme_rgbw() + theme_gridsontop() +
+  #   labs(title = "Count number of rules given stationary frequencies",x=expression(hat(Pi)[A]), y=expression(hat(Pi)[B]), z=expression(hat(Pi)[AB])) +
+  #   Tarrowlab("Stationary frequency B (%)") + Larrowlab("Stationary frequency A (%)") + Rarrowlab("Stationary frequency AB (%)") + theme(plot.title = element_text(hjust = 0.5)) 
+  # #
+ fig <-  ggtern(mesh, aes(x=freq_A, y=freq_B, z=freq_AB)) +
+          geom_point(aes(color = count_rule), size = 0.5) +
+          scale_color_manual(values = c("black", "#5B3794", "#FE5C66", "#FFFE9E")) + 
+          labs(title = "Count number of rules given stationary frequencies",x=expression(hat(Pi)[A]), y=expression(hat(Pi)[B]), z=expression(hat(Pi)[AB])) +
+          Tarrowlab("Stationary frequency B (%)") + Larrowlab("Stationary frequency A (%)") + Rarrowlab("Stationary frequency AB (%)") + theme(plot.title = element_text(hjust = 0.1)) +
+          theme_rgbw() 
   #
   fig_count = paste0(plot_fp, "/plot_count.pdf")
-  print(fig_count)
-  pdf(fig_count, height=7, width=10)
-  print(fig_count)
+  pdf(fig_count, height=4, width=5)
+  print(fig)
   dev.off()
 }
 #
