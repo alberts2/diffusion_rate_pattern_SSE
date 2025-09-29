@@ -1,3 +1,6 @@
+# NOTE: Here for fit_bisse_squamate and the scripts for other clades, I need to update the method
+# for performing likelihood search according to fit_bisse_sim_slow which has the latest update
+
 #### LOAD LIBRARIES ####
 library(diversitree)
 library(ape)
