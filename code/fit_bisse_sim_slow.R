@@ -5,8 +5,8 @@ library(phangorn)
 library(R.utils)
 
 #### FILE SETTING ####
-fp     = "/Users/albertsoewongsono/Documents/Code\ Testing/rate_pattern_diffusion_SSE/"
-# fp     = "/storage/albert/rate_pattern_diffusion_SSE/"
+#fp     = "/Users/albertsoewongsono/Documents/Code\ Testing/rate_pattern_diffusion_SSE/"
+fp     = "/storage/albert/rate_pattern_diffusion_SSE/"
 in_fp  = paste0(fp,"data/Simulation/slow_rates/combined_slow/")
 out_fp = paste0(fp,"plot/")
 
@@ -133,12 +133,12 @@ for (t in 1:length(tree_sizes)){ #loop over each tree size
     bisse_class = make.bisse(tree_dat,char_dat_mod)
     # fit bisse 
     # draw initial starting point
-    lambda_0 = runif(1,0,1)
-    lambda_1 = runif(1,0,1)
-    mu_0     = runif(1,0,1)
-    mu_1     = runif(1,0,1)
-    q_01     = runif(1,0,1)
-    q_10     = runif(1,0,1)
+    lambda_0 = runif(1,0,0.1)
+    lambda_1 = runif(1,0,0.1)
+    mu_0     = runif(1,0,0.1)
+    mu_1     = runif(1,0,0.1)
+    q_01     = runif(1,0,0.1)
+    q_10     = runif(1,0,0.1)
     # create params object
     params= c(lambda_0,lambda_1,
               mu_0,mu_1,

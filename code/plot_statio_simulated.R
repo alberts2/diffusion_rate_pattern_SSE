@@ -267,10 +267,15 @@ summary_df = comb_df[,c("tree","tip_count","root_age",
                         "outlier_direct","outlier_dist","outlier_both","rel_MAE","rel_RMSE",
                         "class_MAE","class_RMSE")]
 
+outlier_1 = summary_df[summary_df$outlier_direct=="outlier",] #all the outliers based on criterion 1
+outlier_2 = summary_df[summary_df$outlier_dist=="outlier",]   #all the outliers based on criterion 2
+outlier_3 = summary_df[summary_df$outlier_both=="outlier",]   #all the outliers based on criterion 3
+
+
 #### PLOT ####
 # Note: currently there's a problem with the dataset, trees across different batches are the same
 # e.g., tree 1 = tree 11 = tree 21 etc. 
-# current redoing the fitting step. 
+# current redoing the fitting step. (fixed) 
 #
 
 summary_df$outlier_direct = factor(summary_df$outlier_direct)
@@ -321,6 +326,33 @@ count_outlier_both_rmse = ggplot(summary_df, aes(x = outlier_both, fill = class_
                                   labs(x = "outlier based on both criterions", y = "Proportion", fill = "RMSE param estimates") +
                                   scale_fill_manual(values = c("acceptable" = "turquoise", "bad" = "#DD7070")) +
                                   theme_minimal()
+
+# Plot 2: outlier + type of mismatch in parameter estimation
+
+# based on criterion 1: direction
+count_direct_miss = ggplot(summary_df, aes(x = outlier_direct, fill = mismatch_class)) +
+                           geom_bar(position = "fill") +  # counts stacked
+                           labs(x = "outlier based on stationary direction", y = "Proportion", fill = "Types of mismatch") +
+                           scale_fill_manual(values = c("match_both" = "turquoise", "miss_both" = "#DD7070",
+                                                        "miss_class" = "#DECBE4", "miss_evo" = "#E5D8BD")) +
+                           theme_minimal()
+
+# based on criterion 2: distribution
+count_dist_miss = ggplot(summary_df, aes(x = outlier_dist, fill = mismatch_class)) +
+                          geom_bar(position = "fill") +  # counts stacked
+                          labs(x = "outlier based on binomial CI", y = "Proportion", fill = "Types of mismatch") +
+                          scale_fill_manual(values = c("match_both" = "turquoise", "miss_both" = "#DD7070",
+                                                       "miss_class" = "#DECBE4", "miss_evo" = "#E5D8BD")) +
+                          theme_minimal()
+
+# based on criterion 3: both
+count_both_miss = ggplot(summary_df, aes(x = outlier_both, fill = mismatch_class)) +
+                          geom_bar(position = "fill") +  # counts stacked
+                          labs(x = "outlier based on both criterions", y = "Proportion", fill = "Types of mismatch") +
+                          scale_fill_manual(values = c("match_both" = "turquoise", "miss_both" = "#DD7070",
+                                                       "miss_class" = "#DECBE4", "miss_evo" = "#E5D8BD")) +
+                          theme_minimal()
+
 
 ### NOTE: My trees are simulated condition on tree sizes, not time 
 # color = "outlier" or "not outlier" (according to three different criterions)
@@ -500,6 +532,9 @@ print(count_outlier_both_mae)
 print(count_outlier_direct_rmse)
 print(count_outlier_dist_rmse)
 print(count_outlier_both_rmse)
+print(count_direct_miss)
+print(count_dist_miss)
+print(count_both_miss)
 print(p_MAE_size_est_direct)
 print(p_MAE_size_est_dist)
 print(p_MAE_size_est_both)
@@ -519,67 +554,69 @@ grid.arrange(p_diff_25, p_diff_50, p_diff_100,
 dev.off()
 #
 # PLOT 5
-plot_ly(summary_df,
-        x = ~root_age, 
-        y = ~tip_count, 
-        z = ~distance_to_statio_0,
-        type   = "scatter3d", 
-        mode   = "markers",
-        color  = ~outlier_direct,
-        colors = c("blue", "red"),
-        symbol = ~sim_type,
-        symbols = c("circle", "square")
-) %>%    # color by group
-  layout(
-    title = "Outlier based on direction in frequencies criterion ",
-    scene = list(
-      xaxis = list(title = "root age", showbackground = FALSE),
-      yaxis = list(title = "tree size", showbackground = FALSE),
-      zaxis = list(title = "distance from true 0", showbackground = FALSE)
-    ),
-    legend = list(traceorder = "normal")  # preserve the factor level order
-  )
+outlier_direct <- plot_ly(summary_df,
+                      x = ~root_age, 
+                      y = ~tip_count, 
+                      z = ~distance_to_statio_0,
+                      type   = "scatter3d", 
+                      mode   = "markers",
+                      color  = ~outlier_direct,
+                      colors = c("blue", "red"),
+                      symbol = ~sim_type,
+                      symbols = c("circle", "square")
+              ) %>%    # color by group
+                layout(
+                  title = "Outlier based on direction in frequencies criterion ",
+                  scene = list(
+                    xaxis = list(title = "root age", showbackground = FALSE),
+                    yaxis = list(title = "tree size", showbackground = FALSE),
+                    zaxis = list(title = "distance from true 0", showbackground = FALSE)
+                  ),
+                  legend = list(traceorder = "normal")  # preserve the factor level order
+                )
 
-plot_ly(summary_df,
-        x = ~root_age, 
-        y = ~tip_count, 
-        z = ~distance_to_statio_0,
-        type   = "scatter3d", 
-        mode   = "markers",
-        color  = ~outlier_dist,
-        colors = c("blue", "red"),
-        symbol = ~sim_type,
-        symbols = c("circle", "square")
-) %>%    # color by group
-  layout(
-    title = "Outlier based on binomial CI criterion",
-    scene = list(
-      xaxis = list(title = "root age", showbackground = FALSE),
-      yaxis = list(title = "tree size", showbackground = FALSE),
-      zaxis = list(title = "distance from true 0", showbackground = FALSE)
-    ),
-    legend = list(traceorder = "normal")  # preserve the factor level order
-  )
+outlier_dist <- plot_ly(summary_df,
+                  x = ~root_age, 
+                  y = ~tip_count, 
+                  z = ~distance_to_statio_0,
+                  type   = "scatter3d", 
+                  mode   = "markers",
+                  color  = ~outlier_dist,
+                  colors = c("blue", "red"),
+                  symbol = ~sim_type,
+                  symbols = c("circle", "square")
+          ) %>%    # color by group
+            layout(
+              title = "Outlier based on binomial CI criterion",
+              scene = list(
+                xaxis = list(title = "root age", showbackground = FALSE),
+                yaxis = list(title = "tree size", showbackground = FALSE),
+                zaxis = list(title = "distance from true 0", showbackground = FALSE)
+              ),
+              legend = list(traceorder = "normal")  # preserve the factor level order
+            )
 #
-plot_ly(summary_df,
-        x = ~root_age, 
-        y = ~tip_count, 
-        z = ~distance_to_statio_0,
-        type   = "scatter3d", 
-        mode   = "markers",
-        color  = ~outlier_both,
-        colors = c("blue", "red"),
-        symbol = ~sim_type,
-        symbols = c("circle", "square")
-) %>%    # color by group
-  layout(
-    title = "Outlier based on both criterions",
-    scene = list(
-      xaxis = list(title = "root age", showbackground = FALSE),
-      yaxis = list(title = "tree size", showbackground = FALSE),
-      zaxis = list(title = "distance from true 0", showbackground = FALSE)
-    ),
-    legend = list(traceorder = "normal")  # preserve the factor level order
-  )
+outlier_both <- plot_ly(summary_df,
+                    x = ~root_age, 
+                    y = ~tip_count, 
+                    z = ~distance_to_statio_0,
+                    type   = "scatter3d", 
+                    mode   = "markers",
+                    color  = ~outlier_both,
+                    colors = c("blue", "red"),
+                    symbol = ~sim_type,
+                    symbols = c("circle", "square")
+            ) %>%    # color by group
+              layout(
+                title = "Outlier based on both criterions",
+                scene = list(
+                  xaxis = list(title = "root age", showbackground = FALSE),
+                  yaxis = list(title = "tree size", showbackground = FALSE),
+                  zaxis = list(title = "distance from true 0", showbackground = FALSE)
+                ),
+                legend = list(traceorder = "normal")  # preserve the factor level order
+            )
 
-
+htmlwidgets::saveWidget(outlier_direct, paste0(out_fp,"3D_outlier_direct.html"))
+htmlwidgets::saveWidget(outlier_dist, paste0(out_fp,"3D_outlier_dist.html"))
+htmlwidgets::saveWidget(outlier_both, paste0(out_fp,"3D_outlier_both.html"))

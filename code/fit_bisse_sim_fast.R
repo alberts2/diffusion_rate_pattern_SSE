@@ -5,8 +5,8 @@ library(phangorn)
 library(R.utils)
 
 #### FILE SETTING ####
-fp     = "/Users/albertsoewongsono/Documents/Code\ Testing/rate_pattern_diffusion_SSE/"
-#fp     = "/storage/albert/rate_pattern_diffusion_SSE/"
+#fp     = "/Users/albertsoewongsono/Documents/Code\ Testing/rate_pattern_diffusion_SSE/"
+fp     = "/storage/albert/rate_pattern_diffusion_SSE/"
 in_fp  = paste0(fp,"data/Simulation/fast_rates/combined_fast/")
 out_fp = paste0(fp,"plot/")
 
