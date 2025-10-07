@@ -16,12 +16,27 @@ fp     = "/Users/albertsoewongsono/Documents/Code\ Testing/rate_pattern_diffusio
 in_fp  = paste0(fp,"data/Inference_Simulation/")
 out_fp = paste0(fp,"plot/")
 
-#### LOAD INFERENCE FILES ####
+#### LOAD INFERENCE FILES (case where simulation setting = inference setting) ####
 # FAST BISSE
-fast_df = read.table(paste0(in_fp,"bisse_fast_summary.csv"),sep=";",header = T)
+# fast_df = read.table(paste0(in_fp,"bisse_fast_summary.csv"),sep=";",header = T)
 # SLOW BISSE
 slow_df = read.table(paste0(in_fp,"bisse_slow_summary.csv"),sep=";",header = T)
 # COMBINED 
+# comb_df = rbind(fast_df,slow_df)
+comb_df = slow_df
+
+#### LOAD INFERENCE FILES (case where simulation setting != inference setting) ####
+# 20% missing taxa
+fast_df = read.table(paste0(in_fp,"bisse_fast_miss20_summary.csv"),sep=";",header = T)
+slow_df = read.table(paste0(in_fp,"bisse_slow_miss20_summary.csv"),sep=";",header = T)
+comb_df = rbind(fast_df,slow_df)
+# 40% missing taxa
+fast_df = read.table(paste0(in_fp,"bisse_fast_miss40_summary.csv"),sep=";",header = T)
+slow_df = read.table(paste0(in_fp,"bisse_slow_miss40_summary.csv"),sep=";",header = T)
+comb_df = rbind(fast_df,slow_df)
+# 80% missing taxa
+fast_df = read.table(paste0(in_fp,"bisse_fast_miss80_summary.csv"),sep=";",header = T)
+slow_df = read.table(paste0(in_fp,"bisse_slow_miss80_summary.csv"),sep=";",header = T)
 comb_df = rbind(fast_df,slow_df)
 
 #### COMPUTE STATIO FREQS ####
@@ -271,6 +286,69 @@ outlier_1 = summary_df[summary_df$outlier_direct=="outlier",] #all the outliers 
 outlier_2 = summary_df[summary_df$outlier_dist=="outlier",]   #all the outliers based on criterion 2
 outlier_3 = summary_df[summary_df$outlier_both=="outlier",]   #all the outliers based on criterion 3
 
+#### CREATE COUNT HEATMAP FOR TRUE EVO VS EXPECTED SCENARIO ACROSS SAMPLES 
+## For statio_A < statio_B
+# non_trivial cases (under our approach)
+# evo_scenario 1a: species loss in B, species gain in A, more transition into B
+# evo_scenario 2a: species gain in B, species loss in A
+# trivial cases
+# evo_scenario 3a: equal net diversification in A&B, more transition into B 
+# evo_scenario 4a: species gain in B, species gain in A, more transition into B 
+# evo_scenario 5a: species loss in B, species loss in A, more transition into B
+# evo_scenario 6a: species gain in B, species gain in A, more transition into A
+# evo_scenario 7a: species loss in B, species loss in A, more transition into A
+
+## For statio_A > statio_B
+# non_trivial cases (under our approach)
+# evo_scenario 1b: species gain in B, species loss in A, more transition into A
+# evo_scenario 2b: species loss in B, species gain in A 
+# trivial cases
+# evo_scenario 3b: equal net diversification in A&B, more transition into A 
+# evo_scenario 4b: species gain in B, species gain in A, more transition into A 
+# evo_scenario 5b: species loss in B, species loss in A, more transition into A
+# evo_scenario 6b: species gain in B, species gain in B, more transition into B
+# evo_scenario 7b: species loss in B, species loss in A, more transition into B 
+
+## For statio_A = statio_B 
+# evo_scenario 1c: species gain in B, species loss in A, more transition into A 
+# evo_scenario 2c: species loss in B, species gain in A, more transition into B
+# evo_scenario 3c: equal speciation, equal extinction, equal transition rates 
+all_scenarios = c("scenario 1a", "scenario 2a", "scenario 3a", "scenario 4a",
+                  "scenario 5a", "scenario 6a", "scenario 7a", "scenario 1b",
+                  "scenario 2b", "scenario 3b", "scenario 4b", "scenario 5b",
+                  "scenario 6b", "scenario 7b", "scenario 1c", "scenario 2c",
+                  "scenario 3c") # list of all scenarios 
+
+heatmap_df        = expand.grid(true_scenario_list = all_scenarios,
+                                est_scenario_list = all_scenarios)
+heatmap_df$count  = rep(0,nrow(heatmap_df))
+
+# fill in the count
+for (i in 1:nrow(comb_df)){
+  true_scenario = comb_df$true_evo[i]
+  est_scenario  = comb_df$est_evo[i]
+  #
+  which_ind = which(heatmap_df$true_scenario_list== true_scenario & 
+                    heatmap_df$est_scenario_list == est_scenario)
+  #
+  heatmap_df$count[which_ind] = heatmap_df$count[which_ind]+1
+}
+
+# get the proportion across each true scenario counts 
+row_sums        = tapply(heatmap_df$count, heatmap_df$true_scenario_list, sum) # compute row sums for true scenarios
+# lookup the corresponding rowsums for each true scenario in heatmap_df
+look_up_rowsums = row_sums[heatmap_df$true_scenario_list]
+# get the proportion for each combination of true vs estimated divided by total trees belong to the true scenario
+heatmap_df$proportion = heatmap_df$count/look_up_rowsums
+# assign 0 for division by zero problem (those true evo scenarios that do not have samples)
+heatmap_df$proportion[is.na(heatmap_df$proportion)] = 0
+# join count and proportion for plotting
+heatmap_df$joint_count_prop <- paste0(
+  heatmap_df$count,
+  "\n(",
+  sprintf("%.2f", heatmap_df$proportion),
+  ")"
+)
 
 #### PLOT ####
 # Note: currently there's a problem with the dataset, trees across different batches are the same
@@ -352,6 +430,29 @@ count_both_miss = ggplot(summary_df, aes(x = outlier_both, fill = mismatch_class
                           scale_fill_manual(values = c("match_both" = "turquoise", "miss_both" = "#DD7070",
                                                        "miss_class" = "#DECBE4", "miss_evo" = "#E5D8BD")) +
                           theme_minimal()
+
+# heatmap for true scenario vs est scenario (by count)
+p_heatmap_count = ggplot(heatmap_df, aes(x = est_scenario_list, y = true_scenario_list, fill = count)) +
+                    geom_tile(color = "grey90") +
+                    geom_text(aes(label = joint_count_prop), color = "black", size = 3) +
+                    scale_fill_gradient(low = "white", high = "steelblue") +
+                    labs(title = "True vs Estimated Evolutionary Scenario (by count)",
+                         x = "Estimated scenario",
+                         y = "True scenario") +
+                    theme_minimal(base_size = 12) +
+                    theme(axis.text.x = element_text(angle = 45, hjust = 1),
+                          plot.title = element_text(hjust = 0.5))
+# heatmap for true scenario vs est scenario (by proportion)
+p_heatmap_prop = ggplot(heatmap_df, aes(x = est_scenario_list, y = true_scenario_list, fill = proportion)) +
+  geom_tile(color = "grey90") +
+  geom_text(aes(label = joint_count_prop), color = "black", size = 3) +
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  labs(title = "True vs Estimated Evolutionary Scenario (by proportion)",
+       x = "Estimated scenario",
+       y = "True scenario") +
+  theme_minimal(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        plot.title = element_text(hjust = 0.5))
 
 
 ### NOTE: My trees are simulated condition on tree sizes, not time 
@@ -535,6 +636,8 @@ print(count_outlier_both_rmse)
 print(count_direct_miss)
 print(count_dist_miss)
 print(count_both_miss)
+print(p_heatmap_count)
+print(p_heatmap_prop)
 print(p_MAE_size_est_direct)
 print(p_MAE_size_est_dist)
 print(p_MAE_size_est_both)
