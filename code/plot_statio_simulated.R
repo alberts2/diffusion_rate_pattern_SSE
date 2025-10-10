@@ -18,12 +18,11 @@ out_fp = paste0(fp,"plot/")
 
 #### LOAD INFERENCE FILES (case where simulation setting = inference setting) ####
 # FAST BISSE
-# fast_df = read.table(paste0(in_fp,"bisse_fast_summary.csv"),sep=";",header = T)
+fast_df = read.table(paste0(in_fp,"bisse_fast_summary.csv"),sep=";",header = T)
 # SLOW BISSE
 slow_df = read.table(paste0(in_fp,"bisse_slow_summary.csv"),sep=";",header = T)
 # COMBINED 
-# comb_df = rbind(fast_df,slow_df)
-comb_df = slow_df
+comb_df = rbind(fast_df,slow_df)
 
 #### LOAD INFERENCE FILES (case where simulation setting != inference setting) ####
 # 20% missing taxa
@@ -625,7 +624,7 @@ p_diff_comb = grid.arrange(p_diff_25, p_diff_50, p_diff_100,
                            p_diff_200, p_diff_400, p_diff_800,
                            nrow = 2, ncol = 3)
 
-pdf(paste0(out_fp,"combined_sim_bisse_plots.pdf"), width = 8, height = 6)  # size in inches
+pdf(paste0(out_fp,"combined_sim_bisse_plots.pdf"), width = 10, height = 8)  # size in inches
 
 print(count_outlier_direct_mae)
 print(count_outlier_dist_mae)
