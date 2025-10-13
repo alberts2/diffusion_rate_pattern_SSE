@@ -19,17 +19,51 @@ comb_df = rbind(fast_df,slow_df)
 #
 ### FAST VS SLOW RATES - MISSING TAXA - REJECTION ON DIST. STATES
 # 20% missing taxa
-fast_df = read.table(paste0(in_fp,"bisse_fast_miss20_summary.csv"),sep=";",header = T)
-slow_df = read.table(paste0(in_fp,"bisse_slow_miss20_summary.csv"),sep=";",header = T)
-comb_df = rbind(fast_df,slow_df)
-# 40% missing taxa
-fast_df = read.table(paste0(in_fp,"bisse_fast_miss40_summary.csv"),sep=";",header = T)
-slow_df = read.table(paste0(in_fp,"bisse_slow_miss40_summary.csv"),sep=";",header = T)
-comb_df = rbind(fast_df,slow_df)
-# 80% missing taxa
+# fast_df = read.table(paste0(in_fp,"bisse_fast_miss20_summary.csv"),sep=";",header = T)
+# slow_df = read.table(paste0(in_fp,"bisse_slow_miss20_summary.csv"),sep=";",header = T)
+# comb_df = rbind(fast_df,slow_df)
+# # 40% missing taxa
+# fast_df = read.table(paste0(in_fp,"bisse_fast_miss40_summary.csv"),sep=";",header = T)
+# slow_df = read.table(paste0(in_fp,"bisse_slow_miss40_summary.csv"),sep=";",header = T)
+# comb_df = rbind(fast_df,slow_df)
+# # 80% missing taxa
 fast_df = read.table(paste0(in_fp,"bisse_fast_miss80_summary.csv"),sep=";",header = T)
 slow_df = read.table(paste0(in_fp,"bisse_slow_miss80_summary.csv"),sep=";",header = T)
 comb_df = rbind(fast_df,slow_df)
+# # Combined (20%, 40%, and 80%)
+fast_df_80 = read.table(paste0(in_fp,"bisse_fast_miss80_summary.csv"),sep=";",header = T)
+slow_df_80 = read.table(paste0(in_fp,"bisse_slow_miss80_summary.csv"),sep=";",header = T)
+#
+fast_df_40 = read.table(paste0(in_fp,"bisse_fast_miss40_summary.csv"),sep=";",header = T)
+slow_df_40 = read.table(paste0(in_fp,"bisse_slow_miss40_summary.csv"),sep=";",header = T)
+#
+fast_df_20 = read.table(paste0(in_fp,"bisse_fast_miss20_summary.csv"),sep=";",header = T)
+slow_df_20 = read.table(paste0(in_fp,"bisse_slow_miss20_summary.csv"),sep=";",header = T)
+
+comb_df = rbind(fast_df_80, fast_df_40, fast_df_20,
+                slow_df_80, slow_df_40, slow_df_20)
+#
+### FAST VS SLOW RATES - NO MISSING TAXA - NO REJECTION ON DIST. STATES
+# FAST BISSE
+fast_df = read.table(paste0(in_fp,"bisse_fast_summary_no_rejection.csv"),sep=";",header = T)
+# SLOW BISSE
+slow_df = read.table(paste0(in_fp,"bisse_slow_summary_no_rejection.csv"),sep=";",header = T)
+# COMBINED 
+comb_df = rbind(fast_df,slow_df)
+#
+### FAST VS SLOW RATES - MISSING TAXA - NO REJECTION ON DIST. STATES
+fast_df_80 = read.table(paste0(in_fp,"bisse_fast_miss80_summary_no_rejection.csv"),sep=";",header = T)
+slow_df_80 = read.table(paste0(in_fp,"bisse_slow_miss80_summary_no_rejection.csv"),sep=";",header = T)
+#
+fast_df_40 = read.table(paste0(in_fp,"bisse_fast_miss40_summary_no_rejection.csv"),sep=";",header = T)
+slow_df_40 = read.table(paste0(in_fp,"bisse_slow_miss40_summary_no_rejection.csv"),sep=";",header = T)
+#
+fast_df_20 = read.table(paste0(in_fp,"bisse_fast_miss20_summary_no_rejection.csv"),sep=";",header = T)
+slow_df_20 = read.table(paste0(in_fp,"bisse_slow_miss20_summary_no_rejection.csv"),sep=";",header = T)
+
+comb_df = rbind(fast_df_80, fast_df_40, fast_df_20,
+                slow_df_80, slow_df_40, slow_df_20)
+
 
 #### 
 # dataset = dataset storing true and estimated values, tip state information, 
@@ -199,8 +233,9 @@ for (i in 1:num_tres){
 # I.e. int_{threshold}|P(bad|outlier) - P(bad|not outlier|)
 total_diff_crit1_MAE =  trapz(plot_dat$treshold_val,abs(plot_dat$bad_MAE_outlier_crit_1-plot_dat$bad_MAE_no_outlier_crit_1))
 
-# compute the optima threshold where the abs difference between P(bad|outlier) - P(bad|no outlier) is at max
-best_threshold_crit1_MAE = which.max(abs(plot_dat$bad_MAE_outlier_crit_1-plot_dat$bad_MAE_no_outlier_crit_1))
+# compute the optima threshold where the difference between P(bad|outlier) - P(bad|no outlier) is at max
+# Note I do not want abs, because I want to only choose threshold where P(bad|outlier) > P(bad|no outlier)
+best_threshold_crit1_MAE = which.max(plot_dat$bad_MAE_outlier_crit_1-plot_dat$bad_MAE_no_outlier_crit_1)
 if (length(best_threshold_crit1_MAE) == 0){
   best_threshold_crit1_MAE = NaN
 } else {
@@ -240,8 +275,9 @@ p_bad_outlier_crit1_MAE = ggplot(plot_dat, aes(x = treshold_val)) +
 # I.e. int_{threshold}|P(bad|outlier) - P(bad|not outlier|)
 total_diff_crit2_MAE =  trapz(plot_dat$treshold_val,abs(plot_dat$bad_MAE_outlier_crit_2-plot_dat$bad_MAE_no_outlier_crit_2))
 
-# compute the optima threshold where the abs difference between P(bad|outlier) - P(bad|no outlier) is at max
-best_threshold_crit2_MAE = which.max(abs(plot_dat$bad_MAE_outlier_crit_2-plot_dat$bad_MAE_no_outlier_crit_2))
+# compute the optima threshold where the difference between P(bad|outlier) - P(bad|no outlier) is at max
+# Note I do not want abs, because I want to only choose threshold where P(bad|outlier) > P(bad|no outlier)
+best_threshold_crit2_MAE = which.max(plot_dat$bad_MAE_outlier_crit_2-plot_dat$bad_MAE_no_outlier_crit_2)
 if (length(best_threshold_crit2_MAE) == 0){
   best_threshold_crit2_MAE = NaN
 } else {
@@ -281,8 +317,9 @@ p_bad_outlier_crit2_MAE = ggplot(plot_dat, aes(x = treshold_val)) +
 # I.e. int_{threshold}|P(bad|outlier) - P(bad|not outlier|)
 total_diff_crit3_MAE =  trapz(plot_dat$treshold_val,abs(plot_dat$bad_MAE_outlier_crit_3-plot_dat$bad_MAE_no_outlier_crit_3))
 
-# compute the optima threshold where the abs difference between P(bad|outlier) - P(bad|no outlier) is at max
-best_threshold_crit3_MAE = which.max(abs(plot_dat$bad_MAE_outlier_crit_3-plot_dat$bad_MAE_no_outlier_crit_3))
+# compute the optima threshold where the difference between P(bad|outlier) - P(bad|no outlier) is at max
+# Note I do not want abs, because I want to only choose threshold where P(bad|outlier) > P(bad|no outlier)
+best_threshold_crit3_MAE = which.max(plot_dat$bad_MAE_outlier_crit_3-plot_dat$bad_MAE_no_outlier_crit_3)
 if (length(best_threshold_crit3_MAE) == 0){
   best_threshold_crit3_MAE = NaN
 } else {
@@ -327,8 +364,9 @@ title_MAE = textGrob("P(bad|outlier) vs P(bad|no outlier) using MAE",
 # I.e. int_{threshold}|P(bad|outlier) - P(bad|not outlier|)
 total_diff_crit1_RMSE =  trapz(plot_dat$treshold_val,abs(plot_dat$bad_RMSE_outlier_crit_1-plot_dat$bad_RMSE_no_outlier_crit_1))
 
-# compute the optima threshold where the abs difference between P(bad|outlier) - P(bad|no outlier) is at max
-best_threshold_crit1_RMSE = which.max(abs(plot_dat$bad_RMSE_outlier_crit_1-plot_dat$bad_RMSE_no_outlier_crit_1))
+# compute the optima threshold where the difference between P(bad|outlier) - P(bad|no outlier) is at max
+# Note I do not want abs, because I want to only choose threshold where P(bad|outlier) > P(bad|no outlier)
+best_threshold_crit1_RMSE = which.max(plot_dat$bad_RMSE_outlier_crit_1-plot_dat$bad_RMSE_no_outlier_crit_1)
 if (length(best_threshold_crit1_RMSE) == 0){
   best_threshold_crit1_RMSE = NaN
 } else {
@@ -368,8 +406,9 @@ p_bad_outlier_crit1_RMSE = ggplot(plot_dat, aes(x = treshold_val)) +
 # I.e. int_{threshold}|P(bad|outlier) - P(bad|not outlier|)
 total_diff_crit2_RMSE =  trapz(plot_dat$treshold_val,abs(plot_dat$bad_RMSE_outlier_crit_2-plot_dat$bad_RMSE_no_outlier_crit_2))
 
-# compute the optima threshold where the abs difference between P(bad|outlier) - P(bad|no outlier) is at max
-best_threshold_crit2_RMSE = which.max(abs(plot_dat$bad_RMSE_outlier_crit_2-plot_dat$bad_RMSE_no_outlier_crit_2))
+# compute the optima threshold where the difference between P(bad|outlier) - P(bad|no outlier) is at max
+# Note I do not want abs, because I want to only choose threshold where P(bad|outlier) > P(bad|no outlier)
+best_threshold_crit2_RMSE = which.max(plot_dat$bad_RMSE_outlier_crit_2-plot_dat$bad_RMSE_no_outlier_crit_2)
 if (length(best_threshold_crit2_RMSE) == 0){
   best_threshold_crit2_RMSE = NaN
 } else {
@@ -409,8 +448,9 @@ p_bad_outlier_crit2_RMSE = ggplot(plot_dat, aes(x = treshold_val)) +
 # I.e. int_{threshold}|P(bad|outlier) - P(bad|not outlier|)
 total_diff_crit3_RMSE     =  trapz(plot_dat$treshold_val,abs(plot_dat$bad_RMSE_outlier_crit_3-plot_dat$bad_RMSE_no_outlier_crit_3))
 
-# compute the optima threshold where the abs difference between P(bad|outlier) - P(bad|no outlier) is at max
-best_threshold_crit3_RMSE = which.max(abs(plot_dat$bad_RMSE_outlier_crit_3-plot_dat$bad_RMSE_no_outlier_crit_3))
+# compute the optima threshold where the difference between P(bad|outlier) - P(bad|no outlier) is at max
+# Note I do not want abs, because I want to only choose threshold where P(bad|outlier) > P(bad|no outlier)
+best_threshold_crit3_RMSE = which.max(plot_dat$bad_RMSE_outlier_crit_3-plot_dat$bad_RMSE_no_outlier_crit_3)
 if (length(best_threshold_crit3_RMSE) == 0){
   best_threshold_crit3_RMSE = NaN
 } else {
