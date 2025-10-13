@@ -37,6 +37,42 @@ comb_df = rbind(fast_df,slow_df)
 fast_df = read.table(paste0(in_fp,"bisse_fast_miss80_summary.csv"),sep=";",header = T)
 slow_df = read.table(paste0(in_fp,"bisse_slow_miss80_summary.csv"),sep=";",header = T)
 comb_df = rbind(fast_df,slow_df)
+# # Combined (20%, 40%, and 80%)
+fast_df_80 = read.table(paste0(in_fp,"bisse_fast_miss80_summary.csv"),sep=";",header = T)
+slow_df_80 = read.table(paste0(in_fp,"bisse_slow_miss80_summary.csv"),sep=";",header = T)
+#
+fast_df_40 = read.table(paste0(in_fp,"bisse_fast_miss40_summary.csv"),sep=";",header = T)
+slow_df_40 = read.table(paste0(in_fp,"bisse_slow_miss40_summary.csv"),sep=";",header = T)
+#
+fast_df_20 = read.table(paste0(in_fp,"bisse_fast_miss20_summary.csv"),sep=";",header = T)
+slow_df_20 = read.table(paste0(in_fp,"bisse_slow_miss20_summary.csv"),sep=";",header = T)
+
+comb_df = rbind(fast_df_80, fast_df_40, fast_df_20,
+                slow_df_80, slow_df_40, slow_df_20)
+
+
+#### LOAD INFERENCE FILES (case where simulation setting = inference setting and no rejection on tip states) ####
+# FAST BISSE
+fast_df = read.table(paste0(in_fp,"bisse_fast_summary_no_rejection.csv"),sep=";",header = T)
+# SLOW BISSE
+slow_df = read.table(paste0(in_fp,"bisse_slow_summary_no_rejection.csv"),sep=";",header = T)
+# COMBINED 
+comb_df = rbind(fast_df,slow_df)
+
+#### LOAD INFERENCE FILES (case where simulation setting != inference setting, no rejection on tip states) ####
+# # Combined (20%, 40%, and 80%)
+fast_df_80 = read.table(paste0(in_fp,"bisse_fast_miss80_summary_no_rejection.csv"),sep=";",header = T)
+slow_df_80 = read.table(paste0(in_fp,"bisse_slow_miss80_summary_no_rejection.csv"),sep=";",header = T)
+#
+fast_df_40 = read.table(paste0(in_fp,"bisse_fast_miss40_summary_no_rejection.csv"),sep=";",header = T)
+slow_df_40 = read.table(paste0(in_fp,"bisse_slow_miss40_summary_no_rejection.csv"),sep=";",header = T)
+#
+fast_df_20 = read.table(paste0(in_fp,"bisse_fast_miss20_summary_no_rejection.csv"),sep=";",header = T)
+slow_df_20 = read.table(paste0(in_fp,"bisse_slow_miss20_summary_no_rejection.csv"),sep=";",header = T)
+
+comb_df = rbind(fast_df_80, fast_df_40, fast_df_20,
+                slow_df_80, slow_df_40, slow_df_20)
+
 
 #### COMPUTE STATIO FREQS ####
 compute_statio <- function(pars){
