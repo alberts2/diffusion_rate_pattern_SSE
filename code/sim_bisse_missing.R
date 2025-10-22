@@ -6,8 +6,8 @@ library(diversitree)
 library(ape)
 
 #### FILE SETTING ####
-#fp     = "/Users/albertsoewongsono/Documents/Code\ Testing/rate_pattern_diffusion_SSE/"
-fp     = "/storage/albert/rate_pattern_diffusion_SSE/"
+fp     = "/Users/albertsoewongsono/Documents/Code\ Testing/rate_pattern_diffusion_SSE/"
+# fp     = "/storage/albert/rate_pattern_diffusion_SSE/"
 out_fp = paste0(fp,"data/Simulation/")
 
 #### PARALLELIZE ####
@@ -67,6 +67,9 @@ sim_bisse_slow <- function(batch_size,lower_bound = 0, upper_bound = 0.01,
     for (j in 1:length(tree_sizes)){
       tree_slow = tree.bisse(pars,max.taxa = tree_sizes[j],x0=0)
       if (!is.null(tree_slow)){ #if tree is not empty, drop taxa at random
+        # SAVE TIP STATES BEFORE PRUNING SO I CAN USE SAMPLING FRACTION DURING INFERENCE
+        write.table(tree_slow$tip.state,paste0(out_fp, "slow_rates_",percent_missing,"percent_miss/", obs_tree_sizes[j], "_taxa/","all_tipstates_slow_", obs_tree_sizes[j], "taxa_", batch_size*(batch_id-1)+i, ".csv"),sep = ";",row.names = FALSE)
+        #
         tips_to_drop = sample(tree_slow$tip.label,percent_missing/100*obs_tree_sizes[j])
         tree_slow    = drop.tip(tree_slow, tips_to_drop)
       }
@@ -76,6 +79,8 @@ sim_bisse_slow <- function(batch_size,lower_bound = 0, upper_bound = 0.01,
         pars      = redraw_function(lower_bound,upper_bound)
         tree_slow = tree.bisse(pars,max.taxa = tree_sizes[j],x0=0)
         if (!is.null(tree_slow)){
+          # SAVE TIP STATES BEFORE PRUNING SO I CAN USE SAMPLING FRACTION DURING INFERENCE
+          write.table(tree_slow$tip.state,paste0(out_fp, "slow_rates_",percent_missing,"percent_miss/", obs_tree_sizes[j], "_taxa/","all_tipstates_slow_", obs_tree_sizes[j], "taxa_", batch_size*(batch_id-1)+i, ".csv"),sep = ";",row.names = FALSE)
           # drop taxa here so the distribution of tip states stay balanced in pruned tree too
           tips_to_drop = sample(tree_slow$tip.label,percent_missing/100*obs_tree_sizes[j])
           tree_slow    = drop.tip(tree_slow, tips_to_drop)
@@ -86,7 +91,7 @@ sim_bisse_slow <- function(batch_size,lower_bound = 0, upper_bound = 0.01,
       pars_convert = as.data.frame(t(pars))
       #
       write.table(pars_convert,paste0(out_fp,"slow_rates_",percent_missing,"percent_miss/",obs_tree_sizes[j],"_taxa/","pars_slow_",obs_tree_sizes[j],"taxa_",batch_size*(batch_id-1)+i,".csv"),sep = ";",row.names = F)
-      # SAVE TREES
+      # SAVE TREES AFTER PRUNING
       write.tree(tree_slow,paste0(out_fp,"slow_rates_",percent_missing,"percent_miss/",obs_tree_sizes[j],"_taxa/","tree_slow_",obs_tree_sizes[j],"taxa_",batch_size*(batch_id-1)+i,".tre"))
       # SAVE CHARACTER DATA AT TIPS
       # get tip states to match tip labels after pruning
@@ -128,6 +133,9 @@ sim_bisse_fast <- function(batch_size,lower_bound = 0.1, upper_bound = 1,
     for (j in 1:length(tree_sizes)){
       tree_fast = tree.bisse(pars,max.taxa = tree_sizes[j],x0=0)
       if (!is.null(tree_fast)){ #if tree is not empty, drop taxa at random
+        # SAVE TIP STATES BEFORE PRUNING SO I CAN USE SAMPLING FRACTION DURING INFERENCE
+        write.table(tree_fast$tip.state,paste0(out_fp, "fast_rates_",percent_missing,"percent_miss/", obs_tree_sizes[j], "_taxa/","all_tipstates_fast_", obs_tree_sizes[j], "taxa_", batch_size*(batch_id-1)+i, ".csv"),sep = ";",row.names = FALSE)
+        #
         tips_to_drop = sample(tree_fast$tip.label,percent_missing/100*obs_tree_sizes[j])
         tree_fast    = drop.tip(tree_fast, tips_to_drop)
       }
@@ -137,6 +145,8 @@ sim_bisse_fast <- function(batch_size,lower_bound = 0.1, upper_bound = 1,
         pars      = redraw_function(lower_bound,upper_bound)
         tree_fast = tree.bisse(pars,max.taxa = tree_sizes[j],x0=0)
         if (!is.null(tree_fast)){
+          # SAVE TIP STATE BEFORE PRUNING SO I CAN USE SAMPLING FRACTION DURING INFERENCE
+          write.table(tree_fast$tip.state,paste0(out_fp, "fast_rates_",percent_missing,"percent_miss/", obs_tree_sizes[j], "_taxa/","all_tipstates_fast_", obs_tree_sizes[j], "taxa_", batch_size*(batch_id-1)+i, ".csv"),sep = ";",row.names = FALSE)
           # drop taxa here so the distribution of tip states stay balanced in pruned tree too
           tips_to_drop = sample(tree_fast$tip.label,percent_missing/100*obs_tree_sizes[j])
           tree_fast    = drop.tip(tree_fast, tips_to_drop)
@@ -147,7 +157,7 @@ sim_bisse_fast <- function(batch_size,lower_bound = 0.1, upper_bound = 1,
       pars_convert = as.data.frame(t(pars))
       #
       write.table(pars_convert,paste0(out_fp,"fast_rates_",percent_missing,"percent_miss/",obs_tree_sizes[j],"_taxa/","pars_fast_",obs_tree_sizes[j],"taxa_",batch_size*(batch_id-1)+i,".csv"),sep = ";",row.names = F)
-      # SAVE TREES
+      # SAVE TREES AFTER PRUNING
       write.tree(tree_fast,paste0(out_fp,"fast_rates_",percent_missing,"percent_miss/",obs_tree_sizes[j],"_taxa/","tree_fast_",obs_tree_sizes[j],"taxa_",batch_size*(batch_id-1)+i,".tre"))
       # SAVE CHARACTER DATA AT TIPS
       # get tip states to match tip labels after pruning
