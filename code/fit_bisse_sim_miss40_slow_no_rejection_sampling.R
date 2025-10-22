@@ -118,6 +118,13 @@ for (t in 1:length(tree_sizes)){ #loop over each tree size
     # compute how many species in 0 and 1 are included in the phylogeny
     prop_0 = nrow(char_dat[char_dat$state==0,])/length(full_char[full_char$x==0,])
     prop_1 = nrow(char_dat[char_dat$state==1,])/length(full_char[full_char$x==1,])
+    # diversitree will fail if sampling frac in one state == 0 
+    if (prop_0 == 0 || is.na(prop_0)){
+      prop_0 == 0.0000001
+    }
+    if (prop_1 == 0 || is.na(prop_1)){
+      prop_1 == 0.0000001
+    }
     # add observed frequencies from the tree
     treeset_slow_df$freq0_obs[num_sim*(t-1)+i] = sum(char_dat$state==0)/nrow(char_dat)
     treeset_slow_df$freq1_obs[num_sim*(t-1)+i] = 1-treeset_slow_df$freq0_obs[num_sim*(t-1)+i]
