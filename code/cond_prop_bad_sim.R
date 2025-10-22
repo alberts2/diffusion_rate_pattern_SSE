@@ -1,6 +1,12 @@
 # this script computes conditional probability of getting bad estimates across tree samples given
 # outliers or not and other arguments defined in the function 
 
+# Oct 17: changed from using relMAE and relRMSE -> MAE and RMSE, 
+# because using the former, the opt threshold tends to be quite big e.g. 50% difference between true and est parameter values
+# to get the biggest difference between P(bad|outlier) and p(bad|no outlier).
+# note: we want opt_threshold to be as small as possible because that means we have more accurate parameter estimate in which 
+# P(bad|outlier) > P(bad|no outlier) is at max. 
+
 #### LOAD LIBRARIES ####
 library(ggplot2)
 library(gridExtra)
@@ -88,6 +94,8 @@ cond_prop_bad_sim <- function(dataset,outlier_criterion,treshold,
       return(ans2)
     }
   }
+  # Input dataset
+  comb_df = dataset
   #### CLASSIFYING EVO SCENARIOS ####
   comb_df$true_statio_0 = rep(NA,nrow(comb_df)) # true statio freqs 0
   comb_df$true_statio_1 = rep(NA,nrow(comb_df)) # true statio freqs 0
@@ -143,20 +151,22 @@ cond_prop_bad_sim <- function(dataset,outlier_criterion,treshold,
         comb_df$outlier[i] = "no outlier"
       }
     }
-    # scale using the magnitude of the true parameters in each sample (dimensionless)
-    mean_scale          = mean(c(true_lambda_0,true_lambda_1,
-                                 true_mu_0,true_mu_1,
-                                 true_q01,true_q10))
+    # # scale using the magnitude of the true parameters in each sample (dimensionless)
+    # mean_scale          = mean(c(true_lambda_0,true_lambda_1,
+    #                              true_mu_0,true_mu_1,
+    #                              true_q01,true_q10))
     if (estim_criterion == "MAE"){
       MAE                   = (abs(comb_df$lambda0_truth[i]-comb_df$lambda0_est[i]) + abs(comb_df$lambda1_truth[i]-comb_df$lambda1_est[i]) +
                                abs(comb_df$mu0_truth[i]-comb_df$mu0_est[i]) + abs(comb_df$mu1_truth[i]-comb_df$mu1_est[i]) + 
                                abs(comb_df$q01_truth[i]-comb_df$q01_est[i]) + abs(comb_df$q10_truth[i]-comb_df$q10_est[i]))/6
-      comb_df$rel_error[i]  = MAE/mean_scale
+      # comb_df$rel_error[i]  = MAE/mean_scale
+      comb_df$rel_error[i]  = MAE
     } else if (estim_criterion == "RMSE"){
       RMSE                = sqrt(((comb_df$lambda0_truth[i]-comb_df$lambda0_est[i])^2 + (comb_df$lambda1_truth[i]-comb_df$lambda1_est[i])^2 +
                                     (comb_df$mu0_truth[i]-comb_df$mu0_est[i])^2 + (comb_df$mu1_truth[i]-comb_df$mu1_est[i])^2 + 
                                     (comb_df$q01_truth[i]-comb_df$q01_est[i])^2 + (comb_df$q10_truth[i]-comb_df$q10_est[i])^2)/6)
-      comb_df$rel_error[i] = RMSE/mean_scale
+      # comb_df$rel_error[i] = RMSE/mean_scale
+      comb_df$rel_error[i] = RMSE
     }
     # classify whether the estimates are acceptable or not
     if (comb_df$rel_error[i] <= treshold){
@@ -165,7 +175,7 @@ cond_prop_bad_sim <- function(dataset,outlier_criterion,treshold,
       comb_df$class_error[i] = "bad"
     }
   }
-  # compute percentage of sample points classified as "bad" given it is outlier or not outlier baed on outlier_criterion
+  # compute percentage of sample points classified as "bad" given it is outlier or not outlier based on outlier_criterion
   # here we compute 
   if (outlier_type == "outlier"){
     # number of samples that are bad and also outlier
@@ -188,9 +198,10 @@ cond_prop_bad_sim <- function(dataset,outlier_criterion,treshold,
 # Do p(bad|outlier) & p(bad|no_outlier) for different treshold levels using both MAE and RMSE
 # then do the same plot using different outlier criterions 
 
-num_tres     = 100
-# treshold_vec = seq(0.1,10,length=num_tres)
-treshold_vec = seq(0.1,1,length=num_tres)
+# num_tres     = 100
+num_tres     = 1000
+# treshold_vec = seq(0.1,1,length=num_tres)
+treshold_vec = seq(0.001,1,length=num_tres)
 
 plot_dat     = data.frame(treshold_id = rep(NA,num_tres), treshold_val = rep(NA,num_tres),
                           bad_MAE_outlier_crit_1 = rep(NA,num_tres), bad_MAE_no_outlier_crit_1 = rep(NA,num_tres),
@@ -236,7 +247,7 @@ total_diff_crit1_MAE =  trapz(plot_dat$treshold_val,abs(plot_dat$bad_MAE_outlier
 # compute the optima threshold where the difference between P(bad|outlier) - P(bad|no outlier) is at max
 # Note I do not want abs, because I want to only choose threshold where P(bad|outlier) > P(bad|no outlier)
 best_threshold_crit1_MAE = which.max(plot_dat$bad_MAE_outlier_crit_1-plot_dat$bad_MAE_no_outlier_crit_1)
-if (length(best_threshold_crit1_MAE) == 0){
+if (length(best_threshold_crit1_MAE) == 0 || all(plot_dat$bad_MAE_outlier_crit_1-plot_dat$bad_MAE_no_outlier_crit_1<0)){
   best_threshold_crit1_MAE = NaN
 } else {
   best_threshold_crit1_MAE = plot_dat$treshold_val[best_threshold_crit1_MAE]
@@ -257,14 +268,14 @@ p_bad_outlier_crit1_MAE = ggplot(plot_dat, aes(x = treshold_val)) +
                                 annotate(
                                   "text",
                                   x = Inf, y = Inf,                # top-right position
-                                  label = paste0("total diff. = ", round(total_diff_crit1_MAE, 2)),
+                                  label = paste0("total diff. = ", round(total_diff_crit1_MAE, 3)),
                                   hjust = 1.1, vjust = 1.5,
                                   size = 5, color = "black", fontface = "italic"
                               ) +
                               annotate(
                                 "text",
                                 x = Inf, y = Inf,                # same x, slightly lower y via vjust
-                                label = paste0("opt threshold = ", round(best_threshold_crit1_MAE, 2)),
+                                label = paste0("opt threshold = ", round(best_threshold_crit1_MAE, 3)),
                                 hjust = 1.1, vjust = 3.0,        # increase vjust to move it below
                                 size = 5, color = "black", fontface = "italic"
                               )
@@ -278,7 +289,7 @@ total_diff_crit2_MAE =  trapz(plot_dat$treshold_val,abs(plot_dat$bad_MAE_outlier
 # compute the optima threshold where the difference between P(bad|outlier) - P(bad|no outlier) is at max
 # Note I do not want abs, because I want to only choose threshold where P(bad|outlier) > P(bad|no outlier)
 best_threshold_crit2_MAE = which.max(plot_dat$bad_MAE_outlier_crit_2-plot_dat$bad_MAE_no_outlier_crit_2)
-if (length(best_threshold_crit2_MAE) == 0){
+if (length(best_threshold_crit2_MAE) == 0 || all(plot_dat$bad_MAE_outlier_crit_2-plot_dat$bad_MAE_no_outlier_crit_2<0)){ #second condition since possibly all differences are -
   best_threshold_crit2_MAE = NaN
 } else {
   best_threshold_crit2_MAE = plot_dat$treshold_val[best_threshold_crit2_MAE]
@@ -299,14 +310,14 @@ p_bad_outlier_crit2_MAE = ggplot(plot_dat, aes(x = treshold_val)) +
   annotate(
     "text",
     x = Inf, y = Inf,                # top-right position
-    label = paste0("total diff. = ", round(total_diff_crit2_MAE, 2)),
+    label = paste0("total diff. = ", round(total_diff_crit2_MAE, 3)),
     hjust = 1.1, vjust = 1.5,
     size = 5, color = "black", fontface = "italic"
   ) +
   annotate(
     "text",
     x = Inf, y = Inf,                # same x, slightly lower y via vjust
-    label = paste0("opt threshold = ", round(best_threshold_crit2_MAE, 2)),
+    label = paste0("opt threshold = ", round(best_threshold_crit2_MAE, 3)),
     hjust = 1.1, vjust = 3.0,        # increase vjust to move it below
     size = 5, color = "black", fontface = "italic"
   )
@@ -320,7 +331,7 @@ total_diff_crit3_MAE =  trapz(plot_dat$treshold_val,abs(plot_dat$bad_MAE_outlier
 # compute the optima threshold where the difference between P(bad|outlier) - P(bad|no outlier) is at max
 # Note I do not want abs, because I want to only choose threshold where P(bad|outlier) > P(bad|no outlier)
 best_threshold_crit3_MAE = which.max(plot_dat$bad_MAE_outlier_crit_3-plot_dat$bad_MAE_no_outlier_crit_3)
-if (length(best_threshold_crit3_MAE) == 0){
+if (length(best_threshold_crit3_MAE) == 0 || all(plot_dat$bad_MAE_outlier_crit_3-plot_dat$bad_MAE_no_outlier_crit_3<0)){
   best_threshold_crit3_MAE = NaN
 } else {
   best_threshold_crit3_MAE = plot_dat$treshold_val[best_threshold_crit3_MAE]
@@ -341,14 +352,14 @@ p_bad_outlier_crit3_MAE = ggplot(plot_dat, aes(x = treshold_val)) +
   annotate(
     "text",
     x = Inf, y = Inf,                # top-right position
-    label = paste0("total diff. = ", round(total_diff_crit3_MAE, 2)),
+    label = paste0("total diff. = ", round(total_diff_crit3_MAE, 3)),
     hjust = 1.1, vjust = 1.5,
     size = 5, color = "black", fontface = "italic"
   ) +
   annotate(
     "text",
     x = Inf, y = Inf,                # same x, slightly lower y via vjust
-    label = paste0("opt threshold = ", round(best_threshold_crit3_MAE, 2)),
+    label = paste0("opt threshold = ", round(best_threshold_crit3_MAE, 3)),
     hjust = 1.1, vjust = 3.0,        # increase vjust to move it below
     size = 5, color = "black", fontface = "italic"
   )
@@ -367,7 +378,7 @@ total_diff_crit1_RMSE =  trapz(plot_dat$treshold_val,abs(plot_dat$bad_RMSE_outli
 # compute the optima threshold where the difference between P(bad|outlier) - P(bad|no outlier) is at max
 # Note I do not want abs, because I want to only choose threshold where P(bad|outlier) > P(bad|no outlier)
 best_threshold_crit1_RMSE = which.max(plot_dat$bad_RMSE_outlier_crit_1-plot_dat$bad_RMSE_no_outlier_crit_1)
-if (length(best_threshold_crit1_RMSE) == 0){
+if (length(best_threshold_crit1_RMSE) == 0 || all(plot_dat$bad_RMSE_outlier_crit_1-plot_dat$bad_RMSE_no_outlier_crit_1<0)){
   best_threshold_crit1_RMSE = NaN
 } else {
   best_threshold_crit1_RMSE = plot_dat$treshold_val[best_threshold_crit1_RMSE]
@@ -388,14 +399,14 @@ p_bad_outlier_crit1_RMSE = ggplot(plot_dat, aes(x = treshold_val)) +
   annotate(
     "text",
     x = Inf, y = Inf,                # top-right position
-    label = paste0("total diff. = ", round(total_diff_crit1_RMSE, 2)),
+    label = paste0("total diff. = ", round(total_diff_crit1_RMSE, 3)),
     hjust = 1.1, vjust = 1.5,
     size = 5, color = "black", fontface = "italic"
   ) +
   annotate(
     "text",
     x = Inf, y = Inf,                # same x, slightly lower y via vjust
-    label = paste0("opt threshold = ", round(best_threshold_crit1_RMSE, 2)),
+    label = paste0("opt threshold = ", round(best_threshold_crit1_RMSE, 3)),
     hjust = 1.1, vjust = 3.0,        # increase vjust to move it below
     size = 5, color = "black", fontface = "italic"
   )
@@ -409,7 +420,7 @@ total_diff_crit2_RMSE =  trapz(plot_dat$treshold_val,abs(plot_dat$bad_RMSE_outli
 # compute the optima threshold where the difference between P(bad|outlier) - P(bad|no outlier) is at max
 # Note I do not want abs, because I want to only choose threshold where P(bad|outlier) > P(bad|no outlier)
 best_threshold_crit2_RMSE = which.max(plot_dat$bad_RMSE_outlier_crit_2-plot_dat$bad_RMSE_no_outlier_crit_2)
-if (length(best_threshold_crit2_RMSE) == 0){
+if (length(best_threshold_crit2_RMSE) == 0 || all(plot_dat$bad_RMSE_outlier_crit_2-plot_dat$bad_RMSE_no_outlier_crit_2<0)){
   best_threshold_crit2_RMSE = NaN
 } else {
   best_threshold_crit2_RMSE = plot_dat$treshold_val[best_threshold_crit2_RMSE]
@@ -430,14 +441,14 @@ p_bad_outlier_crit2_RMSE = ggplot(plot_dat, aes(x = treshold_val)) +
   annotate(
     "text",
     x = Inf, y = Inf,                # top-right position
-    label = paste0("total diff. = ", round(total_diff_crit2_RMSE, 2)),
+    label = paste0("total diff. = ", round(total_diff_crit2_RMSE, 3)),
     hjust = 1.1, vjust = 1.5,
     size = 5, color = "black", fontface = "italic"
   ) +
   annotate(
     "text",
     x = Inf, y = Inf,                # same x, slightly lower y via vjust
-    label = paste0("opt threshold = ", round(best_threshold_crit2_RMSE, 2)),
+    label = paste0("opt threshold = ", round(best_threshold_crit2_RMSE, 3)),
     hjust = 1.1, vjust = 3.0,        # increase vjust to move it below
     size = 5, color = "black", fontface = "italic"
   )
@@ -451,7 +462,7 @@ total_diff_crit3_RMSE     =  trapz(plot_dat$treshold_val,abs(plot_dat$bad_RMSE_o
 # compute the optima threshold where the difference between P(bad|outlier) - P(bad|no outlier) is at max
 # Note I do not want abs, because I want to only choose threshold where P(bad|outlier) > P(bad|no outlier)
 best_threshold_crit3_RMSE = which.max(plot_dat$bad_RMSE_outlier_crit_3-plot_dat$bad_RMSE_no_outlier_crit_3)
-if (length(best_threshold_crit3_RMSE) == 0){
+if (length(best_threshold_crit3_RMSE) == 0 || all(plot_dat$bad_RMSE_outlier_crit_3-plot_dat$bad_RMSE_no_outlier_crit_3<0)){
   best_threshold_crit3_RMSE = NaN
 } else {
   best_threshold_crit3_RMSE = plot_dat$treshold_val[best_threshold_crit3_RMSE]
@@ -472,14 +483,14 @@ p_bad_outlier_crit3_RMSE = ggplot(plot_dat, aes(x = treshold_val)) +
   annotate(
     "text",
     x = Inf, y = Inf,                # top-right position
-    label = paste0("total diff. = ", round(total_diff_crit3_RMSE, 2)),
+    label = paste0("total diff. = ", round(total_diff_crit3_RMSE, 3)),
     hjust = 1.1, vjust = 1.5,
     size = 5, color = "black", fontface = "italic"
   ) +
   annotate(
     "text",
     x = Inf, y = Inf,                # same x, slightly lower y via vjust
-    label = paste0("opt threshold = ", round(best_threshold_crit3_RMSE, 2)),
+    label = paste0("opt threshold = ", round(best_threshold_crit3_RMSE, 3)),
     hjust = 1.1, vjust = 3.0,        # increase vjust to move it below
     size = 5, color = "black", fontface = "italic"
   )
