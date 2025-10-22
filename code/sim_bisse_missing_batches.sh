@@ -3,10 +3,11 @@
 # Number of batches
 NBATCHES=10
 BATCHSIZE=10
-MISSING=80
+MISSING=20
 
 # Path to your R script with sim_bisse_slow and sim_bisse_fast defined
-RSCRIPT="sim_bisse_missing.R"
+# RSCRIPT="sim_bisse_missing.R"
+RSCRIPT="sim_bisse_missing_no_rejection.R"
 
 # Path to store logs
 LOGDIR="/Users/albertsoewongsono/Documents/Code Testing/rate_pattern_diffusion_SSE/data/Simulation/Log"
