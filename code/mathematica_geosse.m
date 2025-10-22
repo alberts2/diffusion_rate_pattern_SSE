@@ -56,5 +56,3 @@ solsset = {sols1};
 (*Save the output as .txt*)
 SetDirectory["/Users/albertsoewongsono/Documents/Code Testing/SSA/diffusion_Rpackage/"];
 Export["output_sim"<>".txt",solsset[[1]]]
-
-

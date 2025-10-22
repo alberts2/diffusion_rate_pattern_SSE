@@ -16,8 +16,8 @@ num_starts = 10  #number of likelihood searches
 # num_starts = 2  #number of likelihood searches
 tree_sizes = c(25,50,100,200,400,800)  #different tree sizes in the dataset
 # tree_sizes = c(25)  #different tree sizes in the dataset
-num_sim    = 10 #number of simulated data
-#num_sim    = 100 #number of simulated data
+#num_sim    = 10 #number of simulated data
+num_sim    = 100 #number of simulated data
 total_sim  = num_sim*length(tree_sizes)
 
 
