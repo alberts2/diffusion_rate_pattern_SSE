@@ -7,17 +7,17 @@ library(R.utils)
 #### FILE SETTING ####
 # fp     = "/Users/albertsoewongsono/Documents/Code\ Testing/rate_pattern_diffusion_SSE/"
 fp     = "/storage/albert/rate_pattern_diffusion_SSE/"
-in_fp  = paste0(fp,"data/Simulation/no_rejection_states/fast_rates/combined_fast/")
+in_fp  = paste0(fp,"data/Simulation/no_rejection_states/fast_rates_more/combined_fast/")
 out_fp = paste0(fp,"plot/")
 
 setwd(fp)
 
-num_starts = 10  #number of likelihood searches
+num_starts = 5  #number of likelihood searches
 # num_starts = 2  #number of likelihood searches
 tree_sizes = c(25,50,100,200,400,800)  #different tree sizes in the dataset
 # tree_sizes = c(25)  #different tree sizes in the dataset
 # num_sim    = 6 #number of simulated data
-num_sim    = 100 #number of simulated data
+num_sim    = 1000 #number of simulated data
 total_sim  = num_sim*length(tree_sizes)
 
 
@@ -148,10 +148,20 @@ for (t in 1:length(tree_sizes)){ #loop over each tree size
     best_lik = best_fit$lnLik
     params   = best_fit$par # start with the optimized param after the intial draw
     # search the max likelihood for that tree 
-    for (j in 1:num_starts){
+    for (j in 2:num_starts){
       print(paste0("running iteration ",j))
       # draw new starting point for both clades for each character
-      new_params = jitters_func(params)
+      # draw new starting point for both clades for each character
+      lambda_0 = runif(1,0,1)
+      lambda_1 = runif(1,0,1)
+      mu_0     = runif(1,0,1)
+      mu_1     = runif(1,0,1)
+      q_01     = runif(1,0,1)
+      q_10     = runif(1,0,1)
+      # create params object
+      new_params= c(lambda_0,lambda_1,
+                mu_0,mu_1,
+                q_01,q_10)
       # Compute the new likelihood
       fit = safe_find_mle(bisse_class,new_params)
       #
@@ -179,4 +189,4 @@ for (t in 1:length(tree_sizes)){ #loop over each tree size
 }
 
 # save output
-write.table(treeset_fast_df,paste0(out_fp,"bisse_fast_summary_no_rejection.csv"),sep = ";",row.names = F)
+write.table(treeset_fast_df,paste0(out_fp,"bisse_fast_summary_no_rejection_1000.csv"),sep = ";",row.names = F)

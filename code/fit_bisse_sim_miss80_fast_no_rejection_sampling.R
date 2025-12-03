@@ -120,10 +120,10 @@ for (t in 1:length(tree_sizes)){ #loop over each tree size
     prop_1 = nrow(char_dat[char_dat$state==1,])/length(full_char[full_char$x==1,])
     # diversitree will fail if sampling frac in one state == 0 
     if (prop_0 == 0 || is.na(prop_0)){
-      prop_0 == 0.0000001
+      prop_0 = 0.0000001
     }
     if (prop_1 == 0 || is.na(prop_1)){
-      prop_1 == 0.0000001
+      prop_1 = 0.0000001
     }
     # add observed frequencies from the tree
     treeset_fast_df$freq0_obs[num_sim*(t-1)+i] = sum(char_dat$state==0)/nrow(char_dat)
@@ -160,10 +160,19 @@ for (t in 1:length(tree_sizes)){ #loop over each tree size
     best_lik = best_fit$lnLik
     params   = best_fit$par # start with the optimized param after the intial draw
     # search the max likelihood for that tree 
-    for (j in 1:num_starts){
+    for (j in 2:num_starts){
       print(paste0("running iteration ",j))
       # draw new starting point for both clades for each character
-      new_params = jitters_func(params)
+      lambda_0 = runif(1,0,1)
+      lambda_1 = runif(1,0,1)
+      mu_0     = runif(1,0,1)
+      mu_1     = runif(1,0,1)
+      q_01     = runif(1,0,1)
+      q_10     = runif(1,0,1)
+      # create params object
+      new_params= c(lambda_0,lambda_1,
+                mu_0,mu_1,
+                q_01,q_10)
       # Compute the new likelihood
       fit = safe_find_mle(bisse_class,new_params)
       #

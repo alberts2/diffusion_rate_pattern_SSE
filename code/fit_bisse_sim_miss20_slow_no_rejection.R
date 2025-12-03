@@ -148,10 +148,19 @@ for (t in 1:length(tree_sizes)){ #loop over each tree size
     best_lik = best_fit$lnLik
     params   = best_fit$par # start with the optimized param after the intial draw
     # search the max likelihood for that tree 
-    for (j in 1:num_starts){
+    for (j in 2:num_starts){
       print(paste0("running iteration ",j))
       # draw new starting point for both clades for each character
-      new_params = jitters_func(params)
+      lambda_0 = runif(1,0,0.1)
+      lambda_1 = runif(1,0,0.1)
+      mu_0     = runif(1,0,0.1)
+      mu_1     = runif(1,0,0.1)
+      q_01     = runif(1,0,0.1)
+      q_10     = runif(1,0,0.1)
+      # create params object
+      new_params= c(lambda_0,lambda_1,
+                mu_0,mu_1,
+                q_01,q_10)
       # Compute the new likelihood
       fit = safe_find_mle(bisse_class,new_params)
       #

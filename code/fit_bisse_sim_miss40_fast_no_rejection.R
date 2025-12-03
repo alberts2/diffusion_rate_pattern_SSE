@@ -45,7 +45,7 @@ compute_statio <- function(pars){
 # add failsafe if happen to draw bad parameters as starting value to compute the likelihood
 safe_find_mle <- function(model, params,
                           lower = rep(0,6), upper = rep(10,6),
-                          timeout = 10000, max_attempts = 1000) {
+                          timeout = 10000, max_attempts = 10000) {
   
   for (i in seq_len(max_attempts)) {
     cat("Attempt", i, "\n")
@@ -148,10 +148,19 @@ for (t in 1:length(tree_sizes)){ #loop over each tree size
     best_lik = best_fit$lnLik
     params   = best_fit$par # start with the optimized param after the intial draw
     # search the max likelihood for that tree 
-    for (j in 1:num_starts){
+    for (j in 2:num_starts){
       print(paste0("running iteration ",j))
       # draw new starting point for both clades for each character
-      new_params = jitters_func(params)
+      lambda_0 = runif(1,0,1)
+      lambda_1 = runif(1,0,1)
+      mu_0     = runif(1,0,1)
+      mu_1     = runif(1,0,1)
+      q_01     = runif(1,0,1)
+      q_10     = runif(1,0,1)
+      # create params object
+      new_params= c(lambda_0,lambda_1,
+                mu_0,mu_1,
+                q_01,q_10)
       # Compute the new likelihood
       fit = safe_find_mle(bisse_class,new_params)
       #
