@@ -523,6 +523,7 @@ will lead to the same stationary frequencies.*)
 (*For example: qBA = 0.7/3, muA = 0.4, lambdaA = 0.25*)
 (*Again, the net diversification is A is preserved in these two examples*)
 
+(*picking suitable fixed values that are satisfied by one of the rules is much harder here*)
 dABVal = 0.1;
 eBVal = 0.1;
 wBVal = 0.075;
@@ -572,7 +573,7 @@ surf1 = ContourPlot3D[
 (* plot the plan for wB equality *)
 surf2 = ContourPlot3D[
   wBVal - 1/8*(-2*dABVal + 8*eBVal) == 0, (*this will be a fixed value since wB, dAB, and eB are fixed, so this will not be plotted*)
-  {wA, 0, 1}, {dBA, 0, 3}, {eA, 0, 1},
+  {wA, 0, 3}, {dBA, 0, 3}, {eA, 0, 3},
   RegionFunction -> Function[{wA, dBA, eA},
   1/9*(-7*bABVal + 2*dABVal + 2/7*(-7*bABVal + 2*dABVal + dBA - 7*eBVal)- 7*eBVal) > 0&&
   1/8*(-2*dABVal + 8*eBVal) > 0 &&
@@ -697,11 +698,11 @@ surf6 = ContourPlot3D[
   ContourStyle -> Opacity[1, Blue]
 ];
 
-Show[surf1,AxesLabel -> {"wA", "dBA", "eA"}]
+(*Show[surf1,AxesLabel -> {"wA", "dBA", "eA"}]
 Show[surf2,AxesLabel -> {"wA", "dBA", "eA"}]
-Show[surf3,AxesLabel -> {"wA", "dBA", "eA"}]
-(*Show[region1,surf1,surf2,surf3,AxesLabel -> {"wA", "dBA", "eA"}]
-Show[region2,surf4,surf5,surf6,AxesLabel -> {"wA", "dBA", "eA"}]*)
+Show[surf3,AxesLabel -> {"wA", "dBA", "eA"}]*)
+Show[region1,surf1,surf2,surf3,AxesLabel -> {"wA", "dBA", "eA"}]
+Show[region2,surf4,surf5,surf6,AxesLabel -> {"wA", "dBA", "eA"}]
 
 
 
