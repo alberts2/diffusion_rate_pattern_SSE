@@ -5,7 +5,14 @@
 *)
 
 (*Import random matrix from R*)
-M = {{0.6,0.4}};
+(*M = {{0.6,0.4}};*)
+(*M = {{0.5,0.5}};*)
+(*M = {{0.4,0.6}};*)
+(*M = {{0.39,0.61}}; *)
+(*this has the similar rulesets as to above and below, only differ in coefficients*)
+(*M = {{0.3999,0.6001}};*)
+(*M = {{0.4,0.8}};*)
+M = {{0.1,0.9}};
 M = Rationalize[M];
 
 (*Define the functions*)
