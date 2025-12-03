@@ -31,63 +31,87 @@ out_fp = paste0(fp,"plot/")
 
 #### LOAD INFERENCE FILES (case where simulation setting = inference setting, rejection on tip states) ####
 # FAST BISSE
-fast_df = read.table(paste0(in_fp,"bisse_fast_summary.csv"),sep=";",header = T)
+fast_df = read.table(paste0(in_fp,"100_trees/no_missing/reject_states/bisse_fast_summary.csv"),sep=";",header = T)
 # SLOW BISSE
-slow_df = read.table(paste0(in_fp,"bisse_slow_summary.csv"),sep=";",header = T)
+slow_df = read.table(paste0(in_fp,"100_trees/no_missing/reject_states/bisse_slow_summary.csv"),sep=";",header = T)
 # COMBINED 
 comb_df = rbind(fast_df,slow_df)
 # COMBINED (Only using trees >= 400 tips)
 comb_df = comb_df[comb_df$tip_count >=400,]
 
-#### LOAD INFERENCE FILES (case where simulation setting != inference setting) ####
+#### LOAD INFERENCE FILES (case where simulation setting != inference setting, rejection on tip states) ####
 # 20% missing taxa
-fast_df = read.table(paste0(in_fp,"bisse_fast_miss20_summary.csv"),sep=";",header = T)
-slow_df = read.table(paste0(in_fp,"bisse_slow_miss20_summary.csv"),sep=";",header = T)
+fast_df = read.table(paste0(in_fp,"100_trees/missing/reject_states/bisse_fast_miss20_summary.csv"),sep=";",header = T)
+slow_df = read.table(paste0(in_fp,"100_trees/missing/reject_states/bisse_slow_miss20_summary.csv"),sep=";",header = T)
 comb_df = rbind(fast_df,slow_df)
 # 40% missing taxa
-fast_df = read.table(paste0(in_fp,"bisse_fast_miss40_summary.csv"),sep=";",header = T)
-slow_df = read.table(paste0(in_fp,"bisse_slow_miss40_summary.csv"),sep=";",header = T)
+fast_df = read.table(paste0(in_fp,"100_trees/missing/reject_states/bisse_fast_miss40_summary.csv"),sep=";",header = T)
+slow_df = read.table(paste0(in_fp,"100_trees/missing/reject_states/bisse_slow_miss40_summary.csv"),sep=";",header = T)
 comb_df = rbind(fast_df,slow_df)
 # 80% missing taxa
-fast_df = read.table(paste0(in_fp,"bisse_fast_miss80_summary.csv"),sep=";",header = T)
-slow_df = read.table(paste0(in_fp,"bisse_slow_miss80_summary.csv"),sep=";",header = T)
+fast_df = read.table(paste0(in_fp,"100_trees/missing/reject_states/bisse_fast_miss80_summary.csv"),sep=";",header = T)
+slow_df = read.table(paste0(in_fp,"100_trees/missing/reject_states/bisse_slow_miss80_summary.csv"),sep=";",header = T)
 comb_df = rbind(fast_df,slow_df)
 # # Combined (20%, 40%, and 80%)
-fast_df_80 = read.table(paste0(in_fp,"bisse_fast_miss80_summary.csv"),sep=";",header = T)
-slow_df_80 = read.table(paste0(in_fp,"bisse_slow_miss80_summary.csv"),sep=";",header = T)
+fast_df_80 = read.table(paste0(in_fp,"100_trees/missing/reject_states/bisse_fast_miss80_summary.csv"),sep=";",header = T)
+slow_df_80 = read.table(paste0(in_fp,"100_trees/missing/reject_states/bisse_slow_miss80_summary.csv"),sep=";",header = T)
 #
-fast_df_40 = read.table(paste0(in_fp,"bisse_fast_miss40_summary.csv"),sep=";",header = T)
-slow_df_40 = read.table(paste0(in_fp,"bisse_slow_miss40_summary.csv"),sep=";",header = T)
+fast_df_40 = read.table(paste0(in_fp,"100_trees/missing/reject_states/bisse_fast_miss40_summary.csv"),sep=";",header = T)
+slow_df_40 = read.table(paste0(in_fp,"100_trees/missing/reject_states/bisse_slow_miss40_summary.csv"),sep=";",header = T)
 #
-fast_df_20 = read.table(paste0(in_fp,"bisse_fast_miss20_summary.csv"),sep=";",header = T)
-slow_df_20 = read.table(paste0(in_fp,"bisse_slow_miss20_summary.csv"),sep=";",header = T)
+fast_df_20 = read.table(paste0(in_fp,"100_trees/missing/reject_states/bisse_fast_miss20_summary.csv"),sep=";",header = T)
+slow_df_20 = read.table(paste0(in_fp,"100_trees/missing/reject_states/bisse_slow_miss20_summary.csv"),sep=";",header = T)
 
 comb_df = rbind(fast_df_80, fast_df_40, fast_df_20,
                 slow_df_80, slow_df_40, slow_df_20)
 
+#### LOAD INFERENCE FILES (case where simulation setting != inference setting, rejection on tip states, account sampling proportion) ####
+fast_df_80 = read.table(paste0(in_fp,"100_trees/missing/reject_states/sampling_prop/bisse_fast_miss80_summary_sampling.csv"),sep=";",header = T)
+slow_df_80 = read.table(paste0(in_fp,"100_trees/missing/reject_states/sampling_prop/bisse_slow_miss80_summary_sampling.csv"),sep=";",header = T)
+#
+fast_df_40 = read.table(paste0(in_fp,"100_trees/missing/reject_states/sampling_prop/bisse_fast_miss40_summary_sampling.csv"),sep=";",header = T)
+slow_df_40 = read.table(paste0(in_fp,"100_trees/missing/reject_states/sampling_prop/bisse_slow_miss40_summary_sampling.csv"),sep=";",header = T)
+#
+fast_df_20 = read.table(paste0(in_fp,"100_trees/missing/reject_states/sampling_prop/bisse_fast_miss20_summary_sampling.csv"),sep=";",header = T)
+slow_df_20 = read.table(paste0(in_fp,"100_trees/missing/reject_states/sampling_prop/bisse_slow_miss20_summary_sampling.csv"),sep=";",header = T)
+
+comb_df = rbind(fast_df_80, fast_df_40, fast_df_20,
+                slow_df_80, slow_df_40, slow_df_20)
 
 #### LOAD INFERENCE FILES (case where simulation setting = inference setting and no rejection on tip states) ####
 # FAST BISSE
-fast_df = read.table(paste0(in_fp,"bisse_fast_summary_no_rejection.csv"),sep=";",header = T)
+fast_df = read.table(paste0(in_fp,"100_trees/no_missing/noreject_states/bisse_fast_summary_no_rejection.csv"),sep=";",header = T)
 # SLOW BISSE
-slow_df = read.table(paste0(in_fp,"bisse_slow_summary_no_rejection.csv"),sep=";",header = T)
+slow_df = read.table(paste0(in_fp,"100_trees/no_missing/noreject_states/bisse_slow_summary_no_rejection.csv"),sep=";",header = T)
 # COMBINED 
 comb_df = rbind(fast_df,slow_df)
 
 #### LOAD INFERENCE FILES (case where simulation setting != inference setting, no rejection on tip states) ####
 # # Combined (20%, 40%, and 80%)
-fast_df_80 = read.table(paste0(in_fp,"bisse_fast_miss80_summary_no_rejection.csv"),sep=";",header = T)
-slow_df_80 = read.table(paste0(in_fp,"bisse_slow_miss80_summary_no_rejection.csv"),sep=";",header = T)
+fast_df_80 = read.table(paste0(in_fp,"100_trees/missing/noreject_states/bisse_fast_miss80_summary_no_rejection.csv"),sep=";",header = T)
+slow_df_80 = read.table(paste0(in_fp,"100_trees/missing/noreject_states/bisse_slow_miss80_summary_no_rejection.csv"),sep=";",header = T)
 #
-fast_df_40 = read.table(paste0(in_fp,"bisse_fast_miss40_summary_no_rejection.csv"),sep=";",header = T)
-slow_df_40 = read.table(paste0(in_fp,"bisse_slow_miss40_summary_no_rejection.csv"),sep=";",header = T)
+fast_df_40 = read.table(paste0(in_fp,"100_trees/missing/noreject_states/bisse_fast_miss40_summary_no_rejection.csv"),sep=";",header = T)
+slow_df_40 = read.table(paste0(in_fp,"100_trees/missing/noreject_states/bisse_slow_miss40_summary_no_rejection.csv"),sep=";",header = T)
 #
-fast_df_20 = read.table(paste0(in_fp,"bisse_fast_miss20_summary_no_rejection.csv"),sep=";",header = T)
-slow_df_20 = read.table(paste0(in_fp,"bisse_slow_miss20_summary_no_rejection.csv"),sep=";",header = T)
+fast_df_20 = read.table(paste0(in_fp,"100_trees/missing/noreject_states/bisse_fast_miss20_summary_no_rejection.csv"),sep=";",header = T)
+slow_df_20 = read.table(paste0(in_fp,"100_trees/missing/noreject_states/bisse_slow_miss20_summary_no_rejection.csv"),sep=";",header = T)
 
 comb_df = rbind(fast_df_80, fast_df_40, fast_df_20,
                 slow_df_80, slow_df_40, slow_df_20)
 
+#### LOAD INFERENCE FILES (case where simulation setting != inference setting, no rejection on tip states, account sampling proportion) ####
+fast_df_80 = read.table(paste0(in_fp,"100_trees/missing/noreject_states/sampling_prop/bisse_fast_miss80_summary_no_rejection_sampling.csv"),sep=";",header = T)
+slow_df_80 = read.table(paste0(in_fp,"100_trees/missing/noreject_states/sampling_prop/bisse_slow_miss80_summary_no_rejection_sampling.csv"),sep=";",header = T)
+#
+fast_df_40 = read.table(paste0(in_fp,"100_trees/missing/noreject_states/sampling_prop/bisse_fast_miss40_summary_no_rejection_sampling.csv"),sep=";",header = T)
+slow_df_40 = read.table(paste0(in_fp,"100_trees/missing/noreject_states/sampling_prop/bisse_slow_miss40_summary_no_rejection_sampling.csv"),sep=";",header = T)
+#
+fast_df_20 = read.table(paste0(in_fp,"100_trees/missing/noreject_states/sampling_prop/bisse_fast_miss20_summary_no_rejection_sampling.csv"),sep=";",header = T)
+slow_df_20 = read.table(paste0(in_fp,"100_trees/missing/noreject_states/sampling_prop/bisse_slow_miss20_summary_no_rejection_sampling.csv"),sep=";",header = T)
+
+comb_df = rbind(fast_df_80, fast_df_40, fast_df_20,
+                slow_df_80, slow_df_40, slow_df_20)
 
 #### COMPUTE STATIO FREQS ####
 compute_statio <- function(pars){
@@ -517,6 +541,179 @@ for (i in 1:length(scenario_list)){
   error_type_mat[[i]][2,2] = rates_vec[4]
 }
 
+# subset the data to compare between net_diver_A/net_diver_B & q_BA/q_AB for each sample using true parameters 
+ratio_dat_rev = data.frame(tree_id          = rep(NA,nrow(comb_df)),
+                       true_ratio_net_A_B   = rep(NA,nrow(comb_df)),
+                       true_ratio_trans_A_B = rep(NA,nrow(comb_df)),
+                       est_ratio_net_A_B    = rep(NA,nrow(comb_df)),
+                       est_ratio_trans_A_B  = rep(NA,nrow(comb_df)),
+                       true_scenario        = rep(NA,nrow(comb_df)),
+                       est_scenario         = rep(NA,nrow(comb_df)))
+
+for (i in 1:nrow(comb_df)){
+  ratio_net_A_B                     = (comb_df$lambda0_truth[i]-comb_df$mu0_truth[i])/(comb_df$lambda1_truth[i]-comb_df$mu1_truth[i])
+  ratio_trans_A_B                   = comb_df$q10_truth[i]/comb_df$q01_truth[i]
+  #
+  est_ratio_net_A_B                 = (comb_df$lambda0_est[i]-comb_df$mu0_est[i])/(comb_df$lambda1_est[i]-comb_df$mu1_est[i])
+  est_ratio_trans_A_B               = comb_df$q10_est/comb_df$q01_est[i]
+  #
+  ratio_dat_rev$tree_id[i]              = comb_df$tree[i]
+  ratio_dat_rev$true_ratio_net_A_B[i]   = ratio_net_A_B
+  ratio_dat_rev$true_ratio_trans_A_B[i] = ratio_trans_A_B
+  ratio_dat_rev$est_ratio_net_A_B[i]    = est_ratio_net_A_B
+  ratio_dat_rev$est_ratio_trans_A_B[i]  = est_ratio_trans_A_B
+  ratio_dat_rev$true_scenario[i]        = comb_df$true_evo[i]
+  ratio_dat_rev$est_scenario[i]         = comb_df$est_evo[i]
+}
+
+# subset the data to compare between net_diver_B/net_diver_A & q_AB/q_BA for each sample using true parameters 
+ratio_dat = data.frame(tree_id              = rep(NA,nrow(comb_df)),
+                       true_ratio_net_B_A   = rep(NA,nrow(comb_df)),
+                       true_ratio_trans_B_A = rep(NA,nrow(comb_df)),
+                       est_ratio_net_B_A    = rep(NA,nrow(comb_df)),
+                       est_ratio_trans_B_A  = rep(NA,nrow(comb_df)),
+                       true_scenario        = rep(NA,nrow(comb_df)),
+                       est_scenario         = rep(NA,nrow(comb_df)))
+
+for (i in 1:nrow(comb_df)){
+  ratio_net_B_A                     = (comb_df$lambda1_truth[i]-comb_df$mu1_truth[i])/(comb_df$lambda0_truth[i]-comb_df$mu0_truth[i])
+  ratio_trans_B_A                   = comb_df$q01_truth[i]/comb_df$q10_truth[i]
+  #
+  est_ratio_net_B_A                     = (comb_df$lambda1_est[i]-comb_df$mu1_est[i])/(comb_df$lambda0_est[i]-comb_df$mu0_est[i])
+  est_ratio_trans_B_A                   = comb_df$q01_est[i]/comb_df$q10_est[i]
+  #
+  ratio_dat$tree_id[i]              = comb_df$tree[i]
+  ratio_dat$true_ratio_net_B_A[i]   = ratio_net_B_A
+  ratio_dat$true_ratio_trans_B_A[i] = ratio_trans_B_A
+  ratio_dat$est_ratio_net_B_A[i]    = est_ratio_net_B_A
+  ratio_dat$est_ratio_trans_B_A[i]  = est_ratio_trans_B_A 
+  ratio_dat$true_scenario[i]        = comb_df$true_evo[i]
+  ratio_dat$est_scenario[i]         = comb_df$est_evo[i]
+}
+
+# subset only for scearios a
+ratio_a_dat = ratio_dat[ratio_dat$true_scenario %in% c("scenario 1a","scenario 2a","scenario 3a","scenario 4a"),]
+
+# subset only for scearios b
+ratio_b_dat = ratio_dat[ratio_dat$true_scenario %in% c("scenario 1b","scenario 2b","scenario 3b","scenario 4b"),]
+
+# subset only for 3a/b and 4a/b
+ratio_3_4_dat = ratio_dat[ratio_dat$true_scenario %in% c("scenario 3a","scenario 3b","scenario 4a","scenario 4b"),]
+
+# subset only for 3a/b 
+ratio_3_dat = ratio_dat[ratio_dat$true_scenario %in% c("scenario 3a","scenario 3b"),]
+
+# subset only for 4a/b 
+ratio_4_dat = ratio_dat[ratio_dat$true_scenario %in% c("scenario 4a","scenario 4b"),]
+
+scenario_cols = c("scenario 1a" = "#08306B",   
+                  "scenario 2a" = "#4B0082",   
+                  "scenario 3a" = "#8B0000",
+                  "scenario 4a" = "#00441B",
+                  "scenario 1b" = "#AED6F1",
+                  "scenario 2b" = "#F5B7B1",
+                  "scenario 3b" = "#ABEBC6",
+                  "scenario 4b" = "#F9E79F")   
+
+scenario_a_cols = c("scenario 1a" = "#08306B",   
+                      "scenario 2a" = "#4B0082",   
+                      "scenario 3a" = "#8B0000",
+                      "scenario 4a" = "#00441B")
+
+scenario_b_cols = c("scenario 1b" = "#AED6F1",
+                    "scenario 2b" = "#F5B7B1",
+                    "scenario 3b" = "#ABEBC6",
+                    "scenario 4b" = "#F9E79F") 
+
+scenario_3_4_cols = c("scenario 3a" = "#8B0000",
+                      "scenario 4a" = "#00441B",
+                      "scenario 3b" = "#ABEBC6",
+                      "scenario 4b" = "#F9E79F")
+
+scenario_3_cols = c("scenario 3a" = "#8B0000",
+                    "scenario 3b" = "#ABEBC6"
+                    )
+
+scenario_4_cols = c("scenario 4a" = "#00441B",
+                    "scenario 4b" = "#F9E79F")
+
+plot_ratio = ggplot(ratio_dat, aes(x = true_ratio_net_B_A , y = true_ratio_trans_B_A, color = true_scenario)) +
+                    geom_point(size = 2, alpha = 0.8) +
+                    labs(
+                      x = "net diversification ratio B on A",
+                      y = "transition rate ratio AB on BA",
+                      color = "true scenario"
+                    ) +
+                    geom_hline(yintercept = 1, color = "red", linetype = "dashed", linewidth = 1) +
+                    geom_vline(xintercept = 1, color = "blue", linetype = "dashed", linewidth = 1) +
+                    scale_color_manual(values = scenario_cols) +
+                    coord_cartesian(xlim = c(-10, 10), ylim = c(-10, 10)) +
+                    theme_minimal()
+
+plot_ratio_a = ggplot(ratio_a_dat, aes(x = true_ratio_net_B_A , y = true_ratio_trans_B_A, color = true_scenario)) +
+                      geom_point(size = 2, alpha = 0.8) +
+                      labs(
+                        x = "net diversification ratio B on A",
+                        y = "transition rate ratio AB on BA",
+                        color = "true scenario"
+                      ) +
+                      geom_hline(yintercept = 1, color = "red", linetype = "dashed", linewidth = 1) +
+                      geom_vline(xintercept = 1, color = "blue", linetype = "dashed", linewidth = 1) +
+                      scale_color_manual(values = scenario_a_cols) +
+                      coord_cartesian(xlim = c(-10, 10), ylim = c(-10, 10)) +
+                      theme_minimal()
+
+plot_ratio_b = ggplot(ratio_b_dat, aes(x = true_ratio_net_B_A , y = true_ratio_trans_B_A, color = true_scenario)) +
+                geom_point(size = 2, alpha = 0.8) +
+                labs(
+                  x = "net diversification ratio B on A",
+                  y = "transition rate ratio AB on BA",
+                  color = "true scenario"
+                ) +
+                geom_hline(yintercept = 1, color = "red", linetype = "dashed", linewidth = 1) +
+                geom_vline(xintercept = 1, color = "blue", linetype = "dashed", linewidth = 1) +
+                scale_color_manual(values = scenario_b_cols) +
+                coord_cartesian(xlim = c(-10, 10), ylim = c(-10, 10)) +
+                theme_minimal()
+
+plot_ratio_3_4 = ggplot(ratio_3_4_dat, aes(x = true_ratio_net_B_A , y = true_ratio_trans_B_A, color = true_scenario)) +
+                    geom_point(size = 2, alpha = 0.8) +
+                    labs(
+                      x = "net diversification ratio B on A",
+                      y = "transition rate ratio AB on BA",
+                      color = "true scenario"
+                    ) +
+                    geom_hline(yintercept = 1, color = "red", linetype = "dashed", linewidth = 1) +
+                    geom_vline(xintercept = 1, color = "blue", linetype = "dashed", linewidth = 1) +
+                    scale_color_manual(values = scenario_3_4_cols) +
+                    coord_cartesian(xlim = c(-10, 10), ylim = c(-10, 10)) +
+                    theme_minimal()
+
+plot_ratio_3  = ggplot(ratio_3_dat, aes(x = true_ratio_net_B_A , y = true_ratio_trans_B_A, color = true_scenario)) +
+                  geom_point(size = 2, alpha = 0.8) +
+                  labs(
+                    x = "net diversification ratio B on A",
+                    y = "transition rate ratio AB on BA",
+                    color = "true scenario"
+                  ) +
+                  geom_hline(yintercept = 1, color = "red", linetype = "dashed", linewidth = 1) +
+                  geom_vline(xintercept = 1, color = "blue", linetype = "dashed", linewidth = 1) +
+                  scale_color_manual(values = scenario_3_cols) +
+                  coord_cartesian(xlim = c(-10, 10), ylim = c(-10, 10)) +
+                  theme_minimal()
+
+plot_ratio_4  = ggplot(ratio_4_dat, aes(x = true_ratio_net_B_A , y = true_ratio_trans_B_A, color = true_scenario)) +
+                  geom_point(size = 2, alpha = 0.8) +
+                  labs(
+                    x = "net diversification ratio B on A",
+                    y = "transition rate ratio AB on BA",
+                    color = "true scenario"
+                  ) +
+                  geom_hline(yintercept = 1, color = "red", linetype = "dashed", linewidth = 1) +
+                  geom_vline(xintercept = 1, color = "blue", linetype = "dashed", linewidth = 1) +
+                  scale_color_manual(values = scenario_4_cols) +
+                  coord_cartesian(xlim = c(-10, 10), ylim = c(-10, 10)) +
+                  theme_minimal()
 #
 #### PLOT ####
 # Note: currently there's a problem with the dataset, trees across different batches are the same
@@ -1037,6 +1234,10 @@ p_diff_comb = grid.arrange(p_diff_25, p_diff_50, p_diff_100,
 
 pdf(paste0(out_fp,"combined_sim_bisse_plots.pdf"), width = 10, height = 8)  # size in inches
 
+print(plot_ratio)
+print(plot_ratio_3_4)
+print(plot_ratio_3)
+print(plot_ratio_4)
 print(count_outlier_direct_mae)
 print(count_outlier_dist_mae)
 print(count_outlier_both_mae)
