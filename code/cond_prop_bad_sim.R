@@ -19,53 +19,53 @@ out_fp = paste0(fp,"plot/")
 
 #### INPUT DATA ####
 ### FAST VS SLOW RATES - NO MISSING TAXA - REJECTION ON DIST. STATES
-slow_df = read.table(paste0(in_fp,"bisse_slow_summary.csv"),sep=";",header = T)
-fast_df = read.table(paste0(in_fp,"bisse_fast_summary.csv"),sep=";",header = T)
+slow_df = read.table(paste0(in_fp,"100_trees/no_missing/reject_states/bisse_slow_summary.csv"),sep=";",header = T)
+fast_df = read.table(paste0(in_fp,"100_trees/no_missing/reject_states/bisse_fast_summary.csv"),sep=";",header = T)
 comb_df = rbind(fast_df,slow_df)
 #
 ### FAST VS SLOW RATES - MISSING TAXA - REJECTION ON DIST. STATES
 # 20% missing taxa
-# fast_df = read.table(paste0(in_fp,"bisse_fast_miss20_summary.csv"),sep=";",header = T)
-# slow_df = read.table(paste0(in_fp,"bisse_slow_miss20_summary.csv"),sep=";",header = T)
+# fast_df = read.table(paste0(in_fp,"100_trees/missing/reject_states/bisse_fast_miss20_summary.csv"),sep=";",header = T)
+# slow_df = read.table(paste0(in_fp,"100_trees/missing/reject_states/bisse_slow_miss20_summary.csv"),sep=";",header = T)
 # comb_df = rbind(fast_df,slow_df)
 # # 40% missing taxa
-# fast_df = read.table(paste0(in_fp,"bisse_fast_miss40_summary.csv"),sep=";",header = T)
-# slow_df = read.table(paste0(in_fp,"bisse_slow_miss40_summary.csv"),sep=";",header = T)
+# fast_df = read.table(paste0(in_fp,"100_trees/missing/reject_states/bisse_fast_miss40_summary.csv"),sep=";",header = T)
+# slow_df = read.table(paste0(in_fp,"100_trees/missing/reject_states/bisse_slow_miss40_summary.csv"),sep=";",header = T)
 # comb_df = rbind(fast_df,slow_df)
 # # 80% missing taxa
-fast_df = read.table(paste0(in_fp,"bisse_fast_miss80_summary.csv"),sep=";",header = T)
-slow_df = read.table(paste0(in_fp,"bisse_slow_miss80_summary.csv"),sep=";",header = T)
+fast_df = read.table(paste0(in_fp,"100_trees/missing/reject_states/bisse_fast_miss80_summary.csv"),sep=";",header = T)
+slow_df = read.table(paste0(in_fp,"100_trees/missing/reject_states/bisse_slow_miss80_summary.csv"),sep=";",header = T)
 comb_df = rbind(fast_df,slow_df)
 # # Combined (20%, 40%, and 80%)
-fast_df_80 = read.table(paste0(in_fp,"bisse_fast_miss80_summary.csv"),sep=";",header = T)
-slow_df_80 = read.table(paste0(in_fp,"bisse_slow_miss80_summary.csv"),sep=";",header = T)
+fast_df_80 = read.table(paste0(in_fp,"100_trees/missing/reject_states/bisse_fast_miss80_summary.csv"),sep=";",header = T)
+slow_df_80 = read.table(paste0(in_fp,"100_trees/missing/reject_states/bisse_slow_miss80_summary.csv"),sep=";",header = T)
 #
-fast_df_40 = read.table(paste0(in_fp,"bisse_fast_miss40_summary.csv"),sep=";",header = T)
-slow_df_40 = read.table(paste0(in_fp,"bisse_slow_miss40_summary.csv"),sep=";",header = T)
+fast_df_40 = read.table(paste0(in_fp,"100_trees/missing/reject_states/bisse_fast_miss40_summary.csv"),sep=";",header = T)
+slow_df_40 = read.table(paste0(in_fp,"100_trees/missing/reject_states/bisse_slow_miss40_summary.csv"),sep=";",header = T)
 #
-fast_df_20 = read.table(paste0(in_fp,"bisse_fast_miss20_summary.csv"),sep=";",header = T)
-slow_df_20 = read.table(paste0(in_fp,"bisse_slow_miss20_summary.csv"),sep=";",header = T)
+fast_df_20 = read.table(paste0(in_fp,"100_trees/missing/reject_states/bisse_fast_miss20_summary.csv"),sep=";",header = T)
+slow_df_20 = read.table(paste0(in_fp,"100_trees/missing/reject_states/bisse_slow_miss20_summary.csv"),sep=";",header = T)
 
 comb_df = rbind(fast_df_80, fast_df_40, fast_df_20,
                 slow_df_80, slow_df_40, slow_df_20)
 #
 ### FAST VS SLOW RATES - NO MISSING TAXA - NO REJECTION ON DIST. STATES
 # FAST BISSE
-fast_df = read.table(paste0(in_fp,"bisse_fast_summary_no_rejection.csv"),sep=";",header = T)
+fast_df = read.table(paste0(in_fp,"100_trees/no_missing/noreject_states/bisse_fast_summary_no_rejection.csv"),sep=";",header = T)
 # SLOW BISSE
-slow_df = read.table(paste0(in_fp,"bisse_slow_summary_no_rejection.csv"),sep=";",header = T)
+slow_df = read.table(paste0(in_fp,"100_trees/no_missing/noreject_states/bisse_slow_summary_no_rejection.csv"),sep=";",header = T)
 # COMBINED 
 comb_df = rbind(fast_df,slow_df)
 #
 ### FAST VS SLOW RATES - MISSING TAXA - NO REJECTION ON DIST. STATES
-fast_df_80 = read.table(paste0(in_fp,"bisse_fast_miss80_summary_no_rejection.csv"),sep=";",header = T)
-slow_df_80 = read.table(paste0(in_fp,"bisse_slow_miss80_summary_no_rejection.csv"),sep=";",header = T)
+fast_df_80 = read.table(paste0(in_fp,"100_trees/missing/noreject_states/bisse_fast_miss80_summary_no_rejection.csv"),sep=";",header = T)
+slow_df_80 = read.table(paste0(in_fp,"100_trees/missing/noreject_states/bisse_slow_miss80_summary_no_rejection.csv"),sep=";",header = T)
 #
-fast_df_40 = read.table(paste0(in_fp,"bisse_fast_miss40_summary_no_rejection.csv"),sep=";",header = T)
-slow_df_40 = read.table(paste0(in_fp,"bisse_slow_miss40_summary_no_rejection.csv"),sep=";",header = T)
+fast_df_40 = read.table(paste0(in_fp,"100_trees/missing/noreject_states/bisse_fast_miss40_summary_no_rejection.csv"),sep=";",header = T)
+slow_df_40 = read.table(paste0(in_fp,"100_trees/missing/noreject_states/bisse_slow_miss40_summary_no_rejection.csv"),sep=";",header = T)
 #
-fast_df_20 = read.table(paste0(in_fp,"bisse_fast_miss20_summary_no_rejection.csv"),sep=";",header = T)
-slow_df_20 = read.table(paste0(in_fp,"bisse_slow_miss20_summary_no_rejection.csv"),sep=";",header = T)
+fast_df_20 = read.table(paste0(in_fp,"100_trees/missing/noreject_states/bisse_fast_miss20_summary_no_rejection.csv"),sep=";",header = T)
+slow_df_20 = read.table(paste0(in_fp,"100_trees/missing/noreject_states/bisse_slow_miss20_summary_no_rejection.csv"),sep=";",header = T)
 
 comb_df = rbind(fast_df_80, fast_df_40, fast_df_20,
                 slow_df_80, slow_df_40, slow_df_20)
