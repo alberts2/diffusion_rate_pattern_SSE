@@ -78,27 +78,28 @@ for (i in 1:nrow(comb_dat)){
 # evo_scenario 1a: species loss in B, species gain in A, more transition into B
 # evo_scenario 2a: species gain in B, species loss in A
 # trivial cases
-# evo_scenario 3a: equal net diversification in A&B, more transition into B 
-# evo_scenario 4a: species gain in B, species gain in A, more transition into B 
+# evo_scenario 3a: species gain in B, species gain in A, more transition into B
+# evo_scenario 4a: species gain in B, species gain in A, more transition into A
 # evo_scenario 5a: species loss in B, species loss in A, more transition into B
-# evo_scenario 6a: species gain in B, species gain in A, more transition into A
-# evo_scenario 7a: species loss in B, species loss in A, more transition into A
+# evo_scenario 6a: species loss in B, species loss in A, more transition into A
+# evo_scenario 7a: equal net diversification in A&B, more transition into B
 
 ## For statio_A > statio_B
 # non_trivial cases (under our approach)
 # evo_scenario 1b: species gain in B, species loss in A, more transition into A
 # evo_scenario 2b: species loss in B, species gain in A 
 # trivial cases
-# evo_scenario 3b: equal net diversification in A&B, more transition into A 
-# evo_scenario 4b: species gain in B, species gain in A, more transition into A 
+# evo_scenario 3b: species gain in B, species gain in A, more transition into A
+# evo_scenario 4b: species gain in B, species gain in B, more transition into B
 # evo_scenario 5b: species loss in B, species loss in A, more transition into A
-# evo_scenario 6b: species gain in B, species gain in B, more transition into B
-# evo_scenario 7b: species loss in B, species loss in A, more transition into B 
+# evo_scenario 6b: species loss in B, species loss in A, more transition into B 
+# evo_scenario 7b: equal net diversification in A&B, more transition into A 
 
 ## For statio_A = statio_B 
 # evo_scenario 1c: species gain in B, species loss in A, more transition into A 
 # evo_scenario 2c: species loss in B, species gain in A, more transition into B
 # evo_scenario 3c: equal speciation, equal extinction, equal transition rates 
+
 
 comb_dat$summary = rep(NA,nrow(comb_dat))
 
@@ -117,29 +118,29 @@ for (i in 1:nrow(comb_dat)){ #loop over each clade
     } else if (dir_net_diver_B > 0 & dir_net_diver_A < 0 & sign_statio == -1){
       comb_dat$summary[i] = "not outlier & scenario 2a"
     } else if (dir_net_diver_A == dir_net_diver_B & dir_transition > 0 & sign_statio == -1){
-      comb_dat$summary[i] = "not outlier & scenario 3a"
+      comb_dat$summary[i] = "not outlier & scenario 7a"
     } else if (dir_net_diver_B > 0 & dir_net_diver_A > 0 & dir_transition > 0 & sign_statio == -1){
-      comb_dat$summary[i] = "not outlier & scenario 4a"
+      comb_dat$summary[i] = "not outlier & scenario 3a"
     } else if (dir_net_diver_B < 0 & dir_net_diver_A < 0 & dir_transition > 0 & sign_statio == -1){
       comb_dat$summary[i] = "not outlier & scenario 5a"
     } else if (dir_net_diver_B > 0 & dir_net_diver_A > 0 & dir_transition < 0 & sign_statio == -1){
-      comb_dat$summary[i] = "not outlier & scenario 6a"
+      comb_dat$summary[i] = "not outlier & scenario 4a"
     } else if (dir_net_diver_B < 0 & dir_net_diver_A < 0 & dir_transition < 0 & sign_statio == -1){
-      comb_dat$summary[i] = "not outlier & scenario 7a"
+      comb_dat$summary[i] = "not outlier & scenario 6a"
     } else if (dir_net_diver_B > 0 & dir_net_diver_A < 0 & dir_transition < 0 & sign_statio == 1){
       comb_dat$summary[i] = "not outlier & scenario 1b"
     } else if (dir_net_diver_B < 0 & dir_net_diver_A > 0 & sign_statio == 1){
       comb_dat$summary[i] = "not outlier & scenario 2b"
     } else if (dir_net_diver_A == dir_net_diver_B & dir_transition < 0 & sign_statio == 1){
-      comb_dat$summary[i] = "not outlier & scenario 3b"
+      comb_dat$summary[i] = "not outlier & scenario 7b"
     } else if (dir_net_diver_B > 0 & dir_net_diver_A > 0 & dir_transition < 0 & sign_statio == 1){
-      comb_dat$summary[i] = "not outlier & scenario 4b"
+      comb_dat$summary[i] = "not outlier & scenario 3b"
     } else if (dir_net_diver_B < 0 & dir_net_diver_A < 0 & dir_transition < 0 & sign_statio == 1){
       comb_dat$summary[i] = "not outlier & scenario 5b"
     } else if (dir_net_diver_B > 0 & dir_net_diver_A > 0 & dir_transition > 0 & sign_statio == 1){
-      comb_dat$summary[i] = "not outlier & scenario 6b"
+      comb_dat$summary[i] = "not outlier & scenario 4b"
     } else if (dir_net_diver_B < 0 & dir_net_diver_A < 0 & dir_transition > 0 & sign_statio == 1){
-      comb_dat$summary[i] = "not outlier & scenario 7b"
+      comb_dat$summary[i] = "not outlier & scenario 6b"
     } else if (dir_net_diver_B > 0 & dir_net_diver_A < 0 & dir_transition < 0 & sign_statio == 0){
       comb_dat$summary[i] = "not outlier & scenario 1c"
     } else if (dir_net_diver_B < 0 & dir_net_diver_A > 0 & dir_transition > 0 & sign_statio == 0){
